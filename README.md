@@ -1,3 +1,11 @@
 # BLASter
+## Projet de compilation de Master
 
-Projet de compilation de Master - Université de Strasbourg 2019
+### Membres du groupe
+---
+Notre groupe est constitué de quatres étudiants :
+- CHRISTOFFEL   Quentin     / Master SDSC
+-               Amarrin     / Master SDSC
+- NASSABAIN     Marco       / Master SIL
+- WENDLING      Nicolas     / Master SIL  
+---
