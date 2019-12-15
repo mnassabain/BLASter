@@ -26,5 +26,7 @@ ast* get_children(node * node);
 
 void print_ast(ast tree);
 
+void free_ast(ast tree);
+
 
 #endif

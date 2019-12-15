@@ -7,7 +7,7 @@ ast create_ast()
 
 ast add_child(ast node, char* name)
 {
-    ast new_node = (ast)malloc(sizeof(node));
+    ast new_node = (ast)malloc(sizeof(struct node));
     new_node->name = malloc(MAX_NAME);
     strcpy(new_node->name, name); // strcpy
     new_node->first_child = NULL;
@@ -118,4 +118,26 @@ void print_ast(ast tree)
         print_ast_aux(ptr, 1);
         ptr = ptr->next;
     }
+}
+
+
+void free_ast(ast tree)
+{
+    if (tree == NULL)
+    {
+        return;
+    }
+
+    // free children
+    ast ptr = tree->first_child;
+    while (ptr != NULL)
+    {
+        ast next_ptr = ptr->next;
+        free_ast(ptr);
+        ptr = next_ptr;
+    }
+
+    // free self
+    free(tree->name);
+    free(tree);
 }
