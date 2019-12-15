@@ -6,11 +6,11 @@
 #include <unistd.h>
 #include <stdio.h>
 
-#define MAX_NAME 255
+#define MAX_NAME 100
 
 typedef struct node
 {
-    char name[MAX_NAME];
+    char* name;
     struct node* first_child;
     struct node* next;
 } node, *ast;

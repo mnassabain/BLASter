@@ -1,4 +1,4 @@
-#include "ast.h"
+#include "../include/ast.h"
 
 ast create_ast()
 {
@@ -8,6 +8,7 @@ ast create_ast()
 ast add_child(ast node, char* name)
 {
     ast new_node = (ast)malloc(sizeof(node));
+    new_node->name = malloc(MAX_NAME);
     strcpy(new_node->name, name); // strcpy
     new_node->first_child = NULL;
     new_node->next = NULL;
