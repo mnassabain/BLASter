@@ -59,7 +59,7 @@ dkms.conf
 ### Flex ###
 
 # Build and Release Folders
-bin/
+bin/*.o
 bin-debug/
 bin-release/
 .actionScriptProperties
@@ -91,3 +91,6 @@ bin-release/
 .history
 
 # End of https://www.gitignore.io/api/c,flex,visualstudiocode
+
+# compiled program
+main
