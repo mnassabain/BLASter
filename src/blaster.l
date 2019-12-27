@@ -1,73 +1,87 @@
 %{
-  #include <stdlib.h>
-  #include <stdio.h>
-  #include "y.tab.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include "y.tab.h"
 
-  // #define KEYWORD         0    
-  // #define TYPE            0
-  // #define IDENTIFIER      0
-  // #define CONSTANT        0
-  // #define STRING          0
-  // #define COMMENT         0
-  // #define OPERATOR        0
+// #define KEYWORD         0    
+// #define TYPE            0
+// #define IDENTIFIER      0
+// #define CONSTANT        0
+// #define STRING          0
+// #define COMMENT         0
+// #define OPERATOR        0
+
+int DEBUG_LEX = 1;
+// if ((debug = getenv ("DEBUG_LEX")) != NULL) {
+//     DEBUG_LEX = atoi(debug);
+// }
+
+
+/// MACROS AND COMMENTS IGNORED, NEED TO BE COPIED IN DESTINATION FILE
 %}
 
-comment       \/\/.*$|\/*([^*]*[*]+[^*\/])*[^*]*[*]+\/
-keyword       for|while|if|else|struct|return|typedef
-type          int|double
-identifier    [a-zA-Z_][a-zA-Z0-9_]*
-constant      [+-]?(([0-9])*\.[0-9]+)|([0-9]+\.)|([0-9]+)|([eE][+-]?[0-9]+)?
-string        \"(\\.|[^\"\\])*\"
-operator      ==|<=|>=|[+\-*\/><=]
-symbol        [{}|,\"\"\'& ()]
+%option yylineno
+
+inline_comment  \/\/.*$
+comment_multi   \/\*([^*]*[*]+[^*\/])*[^*]*[*]+\/
+keyword         struct|return|typedef
+main            main
+identifier      [a-zA-Z_][a-zA-Z0-9_]*
+macro           #(define|include).*$
+constant        ((([0-9])*\.[0-9]*)|([0-9]+\.)|([0-9]+))([eE][+-]?[0-9]+)?
+string          \"(\\.|[^\"\\])*\"
+endline         ;
 
 %%
 
-{keyword}    {
-                printf("KEYWORD");
-                return KEYWORD;
-              }
-{type}        {
-                printf("TYPE");
-                return TYPE;
-              }
-{identifier}  {
-                printf("IDENTIFIER");
-                return IDENTIFIER;
-              }
-{constant}    {
-                printf("CONSTANT");
-                return CONSTANT;
-              }
-{string}      {
-                printf("STRING");
-                return STRING;
-              }
-{comment}     {
-                printf("COMMENT");
-                return COMMENT;
-              }
-{operator}    {
-                printf("OPERATOR");
-                return OPERATOR;
-              }
-{symbol}      {
-                printf("%s",yytext);
-                return yytext[0];
-              }
-.             { 
-                printf("Caractere inconnu: %s", yytext); 
+[=]             { if ( DEBUG_LEX ) printf("ASSIGN "); return ASSIGN; }
+"++"            { if ( DEBUG_LEX ) printf("INC "); return INC;}
+"--"            { if ( DEBUG_LEX ) printf("DEC "); return DEC;}
+{main}          { if ( DEBUG_LEX ) printf("MAIN "); return MAIN; }
+{macro}         { if ( DEBUG_LEX ) printf("MACRO "); }
+"return"        { if ( DEBUG_LEX ) printf("RETURN "); return RETURN; }
+"if"            { if ( DEBUG_LEX ) printf("IF "); return IF; }
+"while"         { if ( DEBUG_LEX ) printf("WHILE "); return WHILE; }
+"else"          { if ( DEBUG_LEX ) printf("ELSE "); return ELSE; }
+"for"           { if ( DEBUG_LEX ) printf("FOR "); return FOR; }
+"true"          { if ( DEBUG_LEX ) printf("TRUE "); return TRUE; }
+"false"         { if ( DEBUG_LEX ) printf("FALSE "); return FALSE; }
+"int"           { if ( DEBUG_LEX ) printf("INT "); return INT; }
+"double"        { if ( DEBUG_LEX ) printf("DOUBLE "); return DOUBLE; }
+{keyword}       {
+                    if ( DEBUG_LEX ) printf("KEYWORD ");
+                    return KEYWORD;
+                }
+{identifier}    {
+                    if ( DEBUG_LEX ) printf("IDENTIFIER ");
+                    return IDENTIFIER;
+                }
+{constant}      {
+                    if ( DEBUG_LEX ) printf("CONSTANT ");
+                    return CONSTANT;
+                }
+{inline_comment} {
+                    if ( DEBUG_LEX ) printf("COMMENT ");
+                    // printf("%s\n", yytext);
+                }
+{comment_multi} {
+                    if ( DEBUG_LEX ) printf("COMMENT ");
+                    // printf("%s\n", yytext);
+                }
+[ \t\n]         { }
+.               { 
+                    return yytext[0]; 
                 }
 
 %%
 
 
-int main(void)
-{
+// int main(void)
+// {
 
   
-  while(1)
-    yylex();
+//   while(1)
+//     yylex();
 
-  return 0;
-}
+//   return 0;
+// }
