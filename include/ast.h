@@ -38,6 +38,14 @@ ast create_ast();
  */
 ast add_child(node* node, char* name);
 
+/**
+ * @brief Ajoute un noeud existant (peut avoir des fils) à un noeud existant
+ * 
+ * @param n noeud au lequel on veut rajouter un fils
+ * @param child le noeud qu'on veut ajouter comme fils
+ * @return ast le noeud parent (arg 1)
+ */
+ast add_child_node(node* n, node* child);
 
 /**
  * @brief Récupérer le nom d'un noeud
