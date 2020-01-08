@@ -1,6 +1,8 @@
 %{
 #include <stdlib.h>
 #include <stdio.h>
+// Doit être AVANT y.tab.h
+#include "../include/ast.h"
 #include "y.tab.h"
 
 // #define KEYWORD         0    
