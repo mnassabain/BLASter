@@ -11,8 +11,11 @@ prefixe=blaster
 # 	lex $(prefixe).l
 # 	gcc lex.yy.c -o $(prefixe) -ll
 
-all: y.tab.o lex.yy.o
-	gcc y.tab.o lex.yy.o -lfl -o $(prefixe)
+all: ast.o y.tab.o lex.yy.o
+	gcc ast.o y.tab.o lex.yy.o -lfl -o $(prefixe)
+
+ast.o:
+	gcc -c ast.c 
 
 y.tab.o: $(prefixe).y
 	yacc -d $(prefixe).y
@@ -20,7 +23,7 @@ y.tab.o: $(prefixe).y
 
 lex.yy.o: $(prefixe).l y.tab.h
 	lex $(prefixe).l
-	gcc -c lex.yy.c
+	gcc -c lex.yy.c 
 
 clean:
-	rm -f *.o y.tab.c y.tab.h lex.yy.c y.output a.out $(prefixe)
+	rm -f *.o y.tab.c y.tab.h lex.yy.c y.output a.out $(prefixe) ast.o

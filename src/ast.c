@@ -141,3 +141,28 @@ void free_ast(ast tree)
     free(tree->name);
     free(tree);
 }
+
+
+ast add_child_node(node* n, node* child)
+{
+    if (n == NULL)
+    {
+        return child;
+    }
+
+    if (n->first_child == NULL)
+    {
+        n->first_child = child;
+        return n;
+    }
+
+    ast ptr = n->first_child;
+    while(ptr->next != NULL)
+    {
+        ptr = ptr->next;
+    }
+
+    ptr->next = child;
+
+    return n;
+}
