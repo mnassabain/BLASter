@@ -47,6 +47,9 @@ typedef struct st
 	// taille du tableau (par défaut 1)
 	int size;
 
+	// increment pour nom des variables temporaires
+	int incr;
+
 } symbol, *symbolTable;
 
 /**
@@ -79,7 +82,8 @@ void display_symbolt(symbolTable st);
  * @param is_constant
  * @return symbol, pointeur dans la table des symboles 
  */
-symbol create_symbol_int(symbolTable st, char* name, int value, bool is_constant);
+symbol insert_symbol_int(symbolTable st, char* name, int value, 
+						bool is_constant);
 
 /**
  * @brief Crée un symbol de type double et l'ajoute à la table des symboles st.
@@ -91,9 +95,23 @@ symbol create_symbol_int(symbolTable st, char* name, int value, bool is_constant
  * @param is_constant 
  * @return symbol, pointeur dans la table des symboles
  */
-symbol create_symbol_double(symbolTable st, char* name, double value, bool is_constant);
+symbol insert_symbol_double(symbolTable st, char* name, double value, 
+							bool is_constant);
 
-//TODO Faire lookup 
+//TODO Faire lookup qui regarde également dans la table des symboles des parents
 
+/**
+ * @brief retourne le symbole s'il est trouvé dans la table. S'il n'est pas
+ * trouvé return NULL.
+ * 
+ * @param name nom de l'id à chercher 
+ * @return symbol 
+ */
+symbol lookup(char* name);
+
+/*
+ * Remarque : lookup inutile dans le cas des cste, on ne va pas les appeler dans 
+ * la suite du programme
+ */
 
 #endif
