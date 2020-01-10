@@ -1,5 +1,4 @@
 *.o
 *.output
-*.c
 blaster
 y.tab.h
