@@ -12,18 +12,28 @@ prefixe=blaster
 # 	gcc lex.yy.c -o $(prefixe) -ll
 
 all: ast.o y.tab.o lex.yy.o
-	gcc ast.o y.tab.o lex.yy.o -lfl -o $(prefixe)
+	gcc ast.o y.tab.o lex.yy.o -lfl -o $(prefixe) -g
 
 ast.o:
-	gcc -c ast.c 
+	gcc -c ast.c -g
 
 y.tab.o: $(prefixe).y
 	yacc -d $(prefixe).y
-	gcc -c y.tab.c
+	gcc -c y.tab.c -I../include/ -g
 
-lex.yy.o: $(prefixe).l y.tab.h
+lex.yy.o: $(prefixe).l
 	lex $(prefixe).l
-	gcc -c lex.yy.c 
+	gcc -c lex.yy.c -g
+
+test: test.o ast.o lex.yy.o
+	gcc test.o ast.o y.tab.o lex.yy.o -lfl -o test -I./ -I../include/
+
+yyparse:
+	yacc -d $(prefixe).y
+	gcc -c y.tab.c -I../include/ -DTESTING
+
+test.o: yyparse
+	gcc -c ../tests/grammar/test.c -I./ -I../include/
 
 clean:
-	rm -f *.o y.tab.c y.tab.h lex.yy.c y.output a.out $(prefixe) ast.o
+	rm -f *.o y.tab.c y.tab.h lex.yy.c y.output a.out $(prefixe) ast.o test

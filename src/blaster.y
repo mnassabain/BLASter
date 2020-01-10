@@ -1,10 +1,11 @@
 %{
 #include <stdio.h>
 #include <string.h>
-#include "../include/ast.h"
+#include "ast.h"
 
 int yylex();
 void yyerror(char*);
+void lex_free();
 extern int yylineno;
 extern FILE* yyin;
 
@@ -13,22 +14,21 @@ ast arbre;
 %}
 
 %union {
-    int valeur;
+    char* string;
+    int value;
     ast arbre;
 }
 
-%token <arbre> KEYWORD
-%token <arbre> TYPE
-%token <arbre> IDENTIFIER
-%token <arbre> CONSTANT
-%token <arbre> STRING
-%token <arbre> COMMENT
-%token <arbre> OPERATOR
-%token <arbre> ENDLINE ASSIGN IF WHILE ELSE FOR TRUE FALSE 
-%token <arbre> MACRO MAIN RETURN
-%token <arbre> INT DOUBLE
-%token <arbre> INC DEC
-%token <arbre> AND_OP OR_OP GEQ_OP LEQ_OP EQ_OP NEQ_OP
+%token <string> IDENTIFIER
+%token <value> CONSTANT
+%token <string> STRING
+%token <string> COMMENT
+%token <string> ASSIGN IF WHILE ELSE FOR
+%token <string> MACRO MAIN RETURN
+%token <string> INT DOUBLE
+%token <string> INC DEC
+%token <string> PRINTF
+%token <string> AND_OP OR_OP GEQ_OP LEQ_OP EQ_OP NEQ_OP
 
 %type <arbre>   expression
 %type <arbre>   condition
@@ -67,12 +67,9 @@ ast arbre;
 axiom:
     INT MAIN '(' ')' '{' statement_list '}'
         {
-            // todo: return est un statement?? peut etre si on a le temps ça m'a l'air pas trop dur
             arbre = add_child(arbre, "main");
             arbre = add_child_node(arbre, $6);
-            // ajout du return de cette manière pour l'instant 
-            // arbre = add_child_node(arbre, $7);
-            printf("\n\nFOUND\n");
+            printf("\nFOUND\n");
             return 0;
         }
     ;
@@ -135,6 +132,10 @@ statement:
 
             $$ = add_child_node($$, $1);
         }
+    | PRINTF
+        {
+            
+        }
     ;
 
 declaration:
@@ -191,8 +192,7 @@ assign_list:
 element:
     IDENTIFIER
         {
-            //////////////
-            $$ = $1;
+
         }
     | table
         {
@@ -207,13 +207,11 @@ element:
 table:
     IDENTIFIER size_list
         {
-            //////////////
-            $$ = $1;
+
         }
     | IDENTIFIER size_list ASSIGN init_table
         {
-            //////////////
-            $$ = $1;
+
         }
     ;
 
@@ -250,31 +248,26 @@ init_table:
 update_list:
     update_list ',' update
         {
-            //////////////
-            $$ = $1;
+
         }
     | update
         {
-            //////////////
-            $$ = $1;
+
         }
     ;
 
 update:
     increment_action IDENTIFIER
         {
-            //////////////
-            $$ = $1;
+
         }
     | IDENTIFIER increment_action
         {
-            //////////////
-            $$ = $1;
+
         }
     | IDENTIFIER ASSIGN expression
         {
-            //////////////
-            $$ = $1;
+
         }
     ;
 
@@ -450,6 +443,7 @@ void yyerror (char *s) {
     fprintf(stderr, "[Yacc] error line %d: %s\n", yylineno, s);
 }
 
+#ifndef TESTING
 int main() {
 
     arbre = create_ast();
@@ -469,6 +463,9 @@ int main() {
     print_ast(arbre);
 
     free_ast(arbre);
+    lex_free();
+    fclose(f);
 
     return 0;
 }
+#endif
