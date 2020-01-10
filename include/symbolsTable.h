@@ -18,8 +18,7 @@
 
 // Les différents types stockés dans l'AST
 #define TYPE_INT	0
-#define TYPE_FLOAT	1
-#define TYPE_DOUBLE	2
+#define TYPE_DOUBLE	1
 
 // Taille maximale du nom de la variable 
 #define MAX_NAME_SIZE	100
