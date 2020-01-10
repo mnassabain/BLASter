@@ -28,14 +28,15 @@ ast arbre;
 %token <arbre> MACRO MAIN RETURN
 %token <arbre> INT DOUBLE
 %token <arbre> INC DEC
+%token <arbre> AND_OP OR_OP GEQ_OP LEQ_OP EQ_OP NEQ_OP
 
 %type <arbre>   expression
 %type <arbre>   condition
 %type <arbre>   iteration
 %type <arbre>   selection
 %type <arbre>   increment_action
-%type <arbre>   increment
-%type <arbre>   increment_list
+%type <arbre>   update_list
+%type <arbre>   update
 %type <arbre>   element
 %type <arbre>   assign_list
 %type <arbre>   type
@@ -51,7 +52,9 @@ ast arbre;
 
 %start axiom
 
-
+%left OR_OP
+%left AND_OP
+%left EQ_OP NEQ_OP GEQ_OP LEQ_OP
 %left '+' '-'
 %left '*' '/'
 
@@ -186,18 +189,16 @@ assign_list:
     ;
 
 element:
-    IDENTIFIER ASSIGN expression
-        {
-            //////////////
-            $$ = $1;
-        }
-
-    | IDENTIFIER
+    IDENTIFIER
         {
             //////////////
             $$ = $1;
         }
     | table
+        {
+            
+        }
+    | update
         {
 
         }
@@ -246,26 +247,31 @@ init_table:
         }
     ;
 
-increment_list:
-    increment_list ',' increment
+update_list:
+    update_list ',' update
         {
             //////////////
             $$ = $1;
         }
-    | increment
+    | update
         {
             //////////////
             $$ = $1;
         }
     ;
 
-increment:
+update:
     increment_action IDENTIFIER
         {
             //////////////
             $$ = $1;
         }
     | IDENTIFIER increment_action
+        {
+            //////////////
+            $$ = $1;
+        }
+    | IDENTIFIER ASSIGN expression
         {
             //////////////
             $$ = $1;
@@ -316,7 +322,7 @@ iteration:
             $$ = add_child_node($$, $3);
             $$ = add_child_node($$, $6);
         }
-    | FOR '(' declaration ';' condition ';' increment_list ')' '{' statement_list '}'
+    | FOR '(' declaration ';' condition ';' update_list ')' '{' statement_list '}'
         {
             $$ = create_ast();
             $$ = add_child($$, "for");
@@ -328,20 +334,44 @@ iteration:
     ;
 
 condition:
-    TRUE
+    condition OR_OP condition
         {
-            // todo
+
+        }
+    | condition AND_OP condition 
+        {
+
+        }
+    | expression GEQ_OP expression
+        {
+
+        }
+    | expression '>' expression %prec GEQ_OP
+        {
+
+        }
+    | expression LEQ_OP expression 
+        {
+
+        }
+    | expression '<' expression %prec LEQ_OP
+        {
+
+        }
+    | expression EQ_OP expression
+        {
+
+        }
+    | expression NEQ_OP expression
+        {
+
+        }
+    | '(' condition ')'
+        {
             //////////////
             $$ = create_ast();
             $$ = add_child($$, "condition");
         }
-    | FALSE
-        {
-            //////////////
-            $$ = create_ast();
-            $$ = add_child($$, "condition");
-        }
-    
     ;
 
 expression_list:

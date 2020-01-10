@@ -27,7 +27,6 @@ int DEBUG_LEX = 1;
 inline_comment  \/\/.*$
 comment_multi   \/\*([^*]*[*]+[^*\/])*[^*]*[*]+\/
 keyword         struct|return|typedef
-main            main
 identifier      [a-zA-Z_][a-zA-Z0-9_]*
 macro           #(define|include).*$
 constant        ((([0-9])*\.[0-9]*)|([0-9]+\.)|([0-9]+))([eE][+-]?[0-9]+)?
@@ -39,41 +38,28 @@ endline         ;
 [=]             { if ( DEBUG_LEX ) printf("ASSIGN "); return ASSIGN; }
 "++"            { if ( DEBUG_LEX ) printf("INC "); return INC;}
 "--"            { if ( DEBUG_LEX ) printf("DEC "); return DEC;}
-{main}          { if ( DEBUG_LEX ) printf("MAIN "); return MAIN; }
+"main"          { if ( DEBUG_LEX ) printf("MAIN "); return MAIN; }
 {macro}         { if ( DEBUG_LEX ) printf("MACRO "); }
 "return"        { if ( DEBUG_LEX ) printf("RETURN "); return RETURN; }
 "if"            { if ( DEBUG_LEX ) printf("IF "); return IF; }
 "while"         { if ( DEBUG_LEX ) printf("WHILE "); return WHILE; }
 "else"          { if ( DEBUG_LEX ) printf("ELSE "); return ELSE; }
 "for"           { if ( DEBUG_LEX ) printf("FOR "); return FOR; }
-"true"          { if ( DEBUG_LEX ) printf("TRUE "); return TRUE; }
-"false"         { if ( DEBUG_LEX ) printf("FALSE "); return FALSE; }
 "int"           { if ( DEBUG_LEX ) printf("INT "); return INT; }
 "double"        { if ( DEBUG_LEX ) printf("DOUBLE "); return DOUBLE; }
-{keyword}       {
-                    if ( DEBUG_LEX ) printf("KEYWORD ");
-                    return KEYWORD;
-                }
-{identifier}    {
-                    if ( DEBUG_LEX ) printf("IDENTIFIER ");
-                    return IDENTIFIER;
-                }
-{constant}      {
-                    if ( DEBUG_LEX ) printf("CONSTANT ");
-                    return CONSTANT;
-                }
-{inline_comment} {
-                    if ( DEBUG_LEX ) printf("COMMENT ");
-                    // printf("%s\n", yytext);
-                }
-{comment_multi} {
-                    if ( DEBUG_LEX ) printf("COMMENT ");
-                    // printf("%s\n", yytext);
-                }
-[ \t\n]         { }
-.               { 
-                    return yytext[0]; 
-                }
+"&&"            { if ( DEBUG_LEX ) printf("AND_OP "); return AND_OP;}
+"||"            { if ( DEBUG_LEX ) printf("OR_OP "); return OR_OP;}
+">="            { if ( DEBUG_LEX ) printf("GEQ_OP "); return GEQ_OP;}
+"<="            { if ( DEBUG_LEX ) printf("LEQ_OP "); return LEQ_OP;}
+"=="            { if ( DEBUG_LEX ) printf("EQ_OP "); return EQ_OP;}
+"!="            { if ( DEBUG_LEX ) printf("NEQ_OP "); return NEQ_OP;}
+{keyword}       { if ( DEBUG_LEX ) printf("KEYWORD "); return KEYWORD; }
+{identifier}    { if ( DEBUG_LEX ) printf("IDENTIFIER "); return IDENTIFIER; }
+{constant}      { if ( DEBUG_LEX ) printf("CONSTANT "); return CONSTANT; }
+{inline_comment} { if ( DEBUG_LEX ) printf("COMMENT "); /* printf("%s\n", yytext); */ }
+{comment_multi} { if ( DEBUG_LEX ) printf("COMMENT "); /* printf("%s\n", yytext); */ }
+[ \t\n]         { if ( DEBUG_LEX ) printf("%s",yytext); }
+.               { if ( DEBUG_LEX ) printf("%s",yytext);  return yytext[0]; }
 
 %%
 
