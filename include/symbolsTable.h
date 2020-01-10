@@ -17,17 +17,18 @@
 #include <stdbool.h>
 
 // Les différents types stockés dans l'AST
-#define TYPE_INT	0
-#define TYPE_DOUBLE	1
+#define TYPE_INT		0
+#define TYPE_DOUBLE		1
+#define TYPE_UNKNOWN	2
 
 // Taille maximale du nom de la variable 
 #define MAX_NAME_SIZE	100
 
 /**
- * @brief Structure table des symboles 
+ * @brief Structure d'un symbole
  * Si le symbole est une cste, on écrit la valeur sinon c'est le nom
  */
-typedef struct st
+typedef struct sy
 {
 	// Nom de la variable	
 	char name[MAX_NAME_SIZE];
@@ -44,13 +45,30 @@ typedef struct st
 	// Boléen indiquant si la variable en cours est une constante
 	bool isConstant; 
 
-	// taille du tableau (par défaut 1)
-	int size;
+} symbol;
 
-	// increment pour nom des variables temporaires
+/**
+ * @brief Structure de la table des symboles. On suit le nombre de symboles 
+ * ajoutés pour sa restitution
+ *
+ */
+typedef struct st
+{
+	// Nombre de variables
+	int nb_var;
+	// Les valeurs 
+	symbol* symbol_table;
+	// increment pour nom des variables temporaires 
+	// TODO : a supprimer 
 	int incr;
 
-} symbol, *symbolTable;
+	/**
+	 * Pour les variables globales 
+	 * Exemple avec un int déclaré avant un for 
+	 */
+	symbolTable* higher_scope;
+
+} *symbolTable;
 
 /**
  * @brief Crée une table des symboles vierges
@@ -82,7 +100,7 @@ void display_symbolt(symbolTable st);
  * @param is_constant
  * @return symbol, pointeur dans la table des symboles 
  */
-symbol insert_symbol_int(symbolTable st, char* name, int value, 
+symbol* insert_symbol_int(symbolTable st, char* name, int value, 
 						bool is_constant);
 
 /**
@@ -95,7 +113,7 @@ symbol insert_symbol_int(symbolTable st, char* name, int value,
  * @param is_constant 
  * @return symbol, pointeur dans la table des symboles
  */
-symbol insert_symbol_double(symbolTable st, char* name, double value, 
+symbol* insert_symbol_double(symbolTable st, char* name, double value, 
 							bool is_constant);
 
 //TODO Faire lookup qui regarde également dans la table des symboles des parents
@@ -107,7 +125,7 @@ symbol insert_symbol_double(symbolTable st, char* name, double value,
  * @param name nom de l'id à chercher 
  * @return symbol 
  */
-symbol lookup(char* name);
+symbol* lookup(char* name);
 
 /*
  * Remarque : lookup inutile dans le cas des cste, on ne va pas les appeler dans 
