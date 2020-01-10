@@ -44,9 +44,12 @@ ast arbre;
 %type <arbre>   statement_list
 %type <arbre>   return
 %type <arbre>   axiom
+%type <arbre>   table
+%type <arbre>   init_table
+%type <arbre>   size_list
+%type <arbre>   expression_list
 
 %start axiom
-
 
 
 %left '+' '-'
@@ -59,13 +62,13 @@ ast arbre;
 // TODO
 
 axiom:
-    INT MAIN '(' ')' '{' statement_list return '}'
+    INT MAIN '(' ')' '{' statement_list '}'
         {
             // todo: return est un statement?? peut etre si on a le temps ça m'a l'air pas trop dur
             arbre = add_child(arbre, "main");
             arbre = add_child_node(arbre, $6);
             // ajout du return de cette manière pour l'instant 
-            arbre = add_child_node(arbre, $7);
+            // arbre = add_child_node(arbre, $7);
             printf("\n\nFOUND\n");
             return 0;
         }
@@ -116,6 +119,13 @@ statement:
             $$ = add_child_node($$, $1);
         }
     | iteration
+        {
+            $$ = create_ast();
+            $$ = add_child($$, "statement");
+
+            $$ = add_child_node($$, $1);
+        }
+    | return
         {
             $$ = create_ast();
             $$ = add_child($$, "statement");
@@ -181,15 +191,41 @@ element:
             //////////////
             $$ = $1;
         }
+
     | IDENTIFIER
         {
             //////////////
             $$ = $1;
         }
-    | increment
+    | table
+        {
+            
+        }
+    ;
+
+table:
+    IDENTIFIER size_list init_table
         {
             //////////////
             $$ = $1;
+        }
+    ;
+
+size_list:
+    size_list '[' expression ']'
+        {
+
+        }
+    | '[' expression ']'
+        {
+
+        }
+    ;
+
+init_table:
+    '=' '{' expression_list'}'
+        {
+
         }
     ;
 
@@ -291,6 +327,17 @@ condition:
     
     ;
 
+expression_list:
+    expression_list ',' expression
+        {
+
+        }
+    | expression
+        {
+
+        }
+    ;
+
 expression:
     expression '+' expression
         {
@@ -373,6 +420,8 @@ int main() {
 
     // Affichage de l'arbre 
     print_ast(arbre);
+
+    free_ast(arbre);
 
     return 0;
 }
