@@ -25,15 +25,15 @@ lex.yy.o: $(prefixe).l
 	lex $(prefixe).l
 	gcc -c lex.yy.c -g
 
-test: test.o ast.o lex.yy.o
-	gcc test.o ast.o y.tab.o lex.yy.o -lfl -o test -I./ -I../include/
+test: launch_test.o ast.o lex.yy.o
+	gcc launch_test.o ast.o y.tab.o lex.yy.o -lfl -o test -I./ -I../include/
 
 yyparse:
 	yacc -d $(prefixe).y
 	gcc -c y.tab.c -I../include/ -DTESTING
 
-test.o: yyparse
-	gcc -c ../tests/grammar/test.c -I./ -I../include/
+launch_test.o: yyparse
+	gcc -c ../tests/grammar/launch_test.c -I./ -I../include/
 
 clean:
 	rm -f *.o y.tab.c y.tab.h lex.yy.c y.output a.out $(prefixe) ast.o test
