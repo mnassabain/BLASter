@@ -204,7 +204,12 @@ element:
     ;
 
 table:
-    IDENTIFIER size_list init_table
+    IDENTIFIER size_list
+        {
+            //////////////
+            $$ = $1;
+        }
+    | IDENTIFIER size_list ASSIGN init_table
         {
             //////////////
             $$ = $1;
@@ -222,12 +227,20 @@ size_list:
         }
     ;
 
-init_table:
-    ASSIGN '{' expression_list '}'
+init_table_list:
+    init_table_list ',' init_table
         {
 
         }
-    |
+    | init_table
+    ;
+
+init_table:
+    '{' expression_list '}'
+        {
+
+        }
+    | '{' init_table_list '}'
         {
 
         }
@@ -412,7 +425,7 @@ int main() {
     arbre = create_ast();
 
     ////////// parse a test file ///
-    FILE* f = fopen ("test.test", "r");
+    FILE* f = fopen ("test.c", "r");
     if (f == NULL) {
         fprintf(stderr, "Unable to open file");
         return 1;
