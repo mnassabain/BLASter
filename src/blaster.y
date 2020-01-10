@@ -199,7 +199,7 @@ element:
         }
     | table
         {
-            
+
         }
     ;
 
@@ -223,7 +223,11 @@ size_list:
     ;
 
 init_table:
-    '=' '{' expression_list'}'
+    ASSIGN '{' expression_list '}'
+        {
+
+        }
+    |
         {
 
         }
