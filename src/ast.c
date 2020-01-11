@@ -50,36 +50,6 @@ ast new_printf(char* printf) {
     return new_node;
 }
 
-
-// ast add_child(ast node, ast_type type)
-// {
-//     ast new_node = (ast)malloc(sizeof(struct node));
-//     new_node->type = type;
-//     new_node->first_child = NULL;
-//     new_node->next = NULL;
-
-//     if (node == NULL)
-//     {
-//         return new_node;
-//     }
-
-//     if (node->first_child == NULL)
-//     {
-//         node->first_child = new_node;
-//         return node;
-//     }
-
-//     ast ptr = node->first_child;
-//     while(ptr->next != NULL)
-//     {
-//         ptr = ptr->next;
-//     }
-
-//     ptr->next = new_node;
-
-//     return node;
-// }
-
 ast* get_children(ast node)
 {
     if (node == NULL)
@@ -157,7 +127,11 @@ void print_ast(ast tree)
     }
 }
 
-
+/**
+ * @brief Fonction interne - libère la mémoire d'un ast
+ * 
+ * @param tree arbre à libérer
+ */
 void free_ast(ast tree)
 {
     if (tree == NULL)
@@ -182,6 +156,11 @@ void free_ast(ast tree)
     free(tree);
 }
 
+ast delete_node(ast node)
+{
+    free_ast(node);
+    return NULL;
+}
 
 ast add_child_node(node* n, node* child)
 {
@@ -229,7 +208,7 @@ ast add_brother_node(node* n, node* brother) {
     return n;
 }
 
-void print_node (ast node) {
+void print_node(ast node) {
 
     if (node == NULL)
         return;
@@ -341,113 +320,11 @@ void print_node (ast node) {
 }
 
 
-void print_code(ast tree)
-{
-    if (tree == NULL)
-    {
-        return;
-    }
-
-    if (tree->first_child == NULL)
-    {
-        print_code_node(tree);
-    }
-    else
-    {
-        switch (tree->type) {
-            case AST_ASSIGN:
-                print_code_node(tree->first_child);
-                printf("=");
-                print_code(tree->first_child->next);
-                break;
-            case AST_ADD:
-                print_code(tree->first_child);
-                printf("+");
-                print_code(tree->first_child->next);
-                break;
-            case AST_MUL:
-                print_code(tree->first_child);
-                printf("*");
-                print_code(tree->first_child->next);
-                break;
-            case AST_DIV:
-                print_code(tree->first_child);
-                printf("/");
-                print_code(tree->first_child->next);
-                break;
-            case AST_MINUS:
-                print_code(tree->first_child);
-                printf("-");
-                print_code(tree->first_child->next);
-                break;
-            case AST_AND_OP:
-                print_code(tree->first_child);
-                printf("&&");
-                print_code(tree->first_child->next);
-                break;
-            case AST_OR_OP:
-                print_code(tree->first_child);
-                printf("||");
-                print_code(tree->first_child->next);
-                break;
-            case AST_GEQ_OP:
-                print_code(tree->first_child);
-                printf(">=");
-                print_code(tree->first_child->next);
-                break;
-            case AST_LEQ_OP:
-                print_code(tree->first_child);
-                printf("<=");
-                print_code(tree->first_child->next);
-                break;
-            case AST_GT_OP:
-                print_code(tree->first_child);
-                printf(">");
-                print_code(tree->first_child->next);
-                break;
-            case AST_LT_OP:
-                print_code(tree->first_child);
-                printf("<");
-                print_code(tree->first_child->next);
-                break;
-            case AST_NEQ_OP:
-                print_code(tree->first_child);
-                printf("!=");
-                print_code(tree->first_child->next);
-                break;
-            case AST_EQ_OP:
-                print_code(tree->first_child);
-                printf("==");
-                print_code(tree->first_child->next);
-                break;
-            case AST_WHILE:
-                print_code_node(tree);
-                printf(" (");
-                print_code(tree->first_child);
-                printf(") { ");
-                print_code(tree->first_child->next);
-                printf(" }");
-                break;
-            case AST_UMINUS:
-                print_code_node(tree);
-                print_code_node(tree->first_child);
-                break;
-            default:
-                print_code_node(tree);
-                ast ptr = tree->first_child;
-                while(ptr != NULL)
-                {
-                    print_code(ptr);
-                    ptr = ptr->next;
-                }
-        }
-
-        
-    }
-
-    return;
-}
-
+/**
+ * @brief Fonction auxiliaire utilisée par print_code
+ * 
+ * @param node noeud à afficher en code
+ */
 void print_code_node(ast node)
 {
     if (node == NULL)
@@ -559,4 +436,111 @@ void print_code_node(ast node)
             break;
     }
     // printf("\n");
+}
+
+void print_code(ast tree)
+{
+    if (tree == NULL)
+    {
+        return;
+    }
+
+    if (tree->first_child == NULL)
+    {
+        print_code_node(tree);
+    }
+    else
+    {
+        switch (tree->type) {
+            case AST_ASSIGN:
+                print_code_node(tree->first_child);
+                printf("=");
+                print_code(tree->first_child->next);
+                break;
+            case AST_ADD:
+                print_code(tree->first_child);
+                printf("+");
+                print_code(tree->first_child->next);
+                break;
+            case AST_MUL:
+                print_code(tree->first_child);
+                printf("*");
+                print_code(tree->first_child->next);
+                break;
+            case AST_DIV:
+                print_code(tree->first_child);
+                printf("/");
+                print_code(tree->first_child->next);
+                break;
+            case AST_MINUS:
+                print_code(tree->first_child);
+                printf("-");
+                print_code(tree->first_child->next);
+                break;
+            case AST_AND_OP:
+                print_code(tree->first_child);
+                printf("&&");
+                print_code(tree->first_child->next);
+                break;
+            case AST_OR_OP:
+                print_code(tree->first_child);
+                printf("||");
+                print_code(tree->first_child->next);
+                break;
+            case AST_GEQ_OP:
+                print_code(tree->first_child);
+                printf(">=");
+                print_code(tree->first_child->next);
+                break;
+            case AST_LEQ_OP:
+                print_code(tree->first_child);
+                printf("<=");
+                print_code(tree->first_child->next);
+                break;
+            case AST_GT_OP:
+                print_code(tree->first_child);
+                printf(">");
+                print_code(tree->first_child->next);
+                break;
+            case AST_LT_OP:
+                print_code(tree->first_child);
+                printf("<");
+                print_code(tree->first_child->next);
+                break;
+            case AST_NEQ_OP:
+                print_code(tree->first_child);
+                printf("!=");
+                print_code(tree->first_child->next);
+                break;
+            case AST_EQ_OP:
+                print_code(tree->first_child);
+                printf("==");
+                print_code(tree->first_child->next);
+                break;
+            case AST_WHILE:
+                print_code_node(tree);
+                printf(" (");
+                print_code(tree->first_child);
+                printf(") { ");
+                print_code(tree->first_child->next);
+                printf(" }");
+                break;
+            case AST_UMINUS:
+                print_code_node(tree);
+                print_code_node(tree->first_child);
+                break;
+            default:
+                print_code_node(tree);
+                ast ptr = tree->first_child;
+                while(ptr != NULL)
+                {
+                    print_code(ptr);
+                    ptr = ptr->next;
+                }
+        }
+
+        
+    }
+
+    return;
 }

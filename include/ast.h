@@ -31,16 +31,49 @@ typedef struct node
     
 } node, *ast;
 
-
+/**
+ * @brief Crée un noeud avec un type passé en argument
+ * 
+ * @param type type du noeud qu'on veut
+ * @return ast noeud créé
+ */
 ast new_node(ast_type type);
-ast new_int(int val);
-ast new_double(double val);
-ast new_id(char* id);
-ast new_printf(char* printf);
 
+/**
+ * @brief Crée un noeud de type int avec une valeur
+ * 
+ * @param val valeur du noeud (en int)
+ * @return ast noeud créé
+ */
+ast new_int(int val);
+
+/**
+ * @brief Crée un noeud de type double avec une valeur
+ * 
+ * @param val valeur du noeud (double)
+ * @return ast noeud créé
+ */
+ast new_double(double val);
+
+/**
+ * @brief Crée un noeud de type id avec l'identifiant
+ * 
+ * @param id identifiant du noeud (en string)
+ * @return ast noeud créé
+ */
+ast new_id(char* id);
+
+/**
+ * @brief Crée un noeud de type printf
+ * 
+ * @param printf la commande entière printf
+ * @return ast noeud créé
+ */
+ast new_printf(char* printf);
 
 /**
  * @brief Ajoute un noeud existant (peut avoir des fils) à un noeud existant
+ * comme fils
  * 
  * @param n noeud au lequel on veut rajouter un fils
  * @param child le noeud qu'on veut ajouter comme fils
@@ -48,8 +81,15 @@ ast new_printf(char* printf);
  */
 ast add_child_node(node* n, node* child);
 
+/**
+ * @brief Ajoute un noeud existant (peut avoir des fils) à un noeud existant
+ * comme frère
+ * 
+ * @param n noeud au lequel on veut rajouter un frère
+ * @param brother le noeud qu'on veut ajouter comme frère
+ * @return ast le noeud parent (arg 1)
+ */
 ast add_brother_node(node* n, node* brother);
-
 
 /**
  * @brief Récupérer tous les fils d'un noeud
@@ -59,6 +99,12 @@ ast add_brother_node(node* n, node* brother);
  */
 ast* get_children(node * node);
 
+/**
+ * @brief Afficher un noeud
+ * 
+ * @param node noeud à afficher
+ */
+void print_node(ast node);
 
 /**
  * @brief Afficher un AST
@@ -67,17 +113,19 @@ ast* get_children(node * node);
  */
 void print_ast(ast tree);
 
-void print_node(ast node);
+/**
+ * @brief Effacer noeud et ses fils - fonction à utiliser
+ * 
+ * @param node noeud à effacer
+ * @return null
+ */
+ast delete_node(ast node);
 
 /**
- * @brief Libérer mémoire de l'AST
+ * @brief Générer un code source à partir d'un AST
  * 
- * @param tree AST à free
+ * @param tree AST à transformer en code
  */
-void free_ast(ast tree);
-
-// comme print_node mais adapté pour le code
-void print_code_node(ast node);
 void print_code(ast tree);
 
 #endif
