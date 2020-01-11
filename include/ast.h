@@ -8,6 +8,8 @@
 
 #define MAX_NAME 100
 
+typedef enum ast_type { AST_ID, AST_INT, AST_DOUBLE, AST_INT_VAL, AST_DOUBLE_VAL, AST_ADD, AST_MUL, AST_DIV, AST_MINUS, AST_UMINUS, AST_ASSIGN, AST_WHILE, AST_IF, AST_ELSE, AST_MAIN, AST_INC, AST_DEC, AST_RETURN, AST_FOR, AST_AND_OP, AST_OR_OP, AST_STAT} ast_type;
+
 /* 
  * IMPORTANT: même si avec cette structure on peut ajouter des frères au
  *   noeud racine, on ne va pas le faire; nous allons nous concentrer sur les
@@ -15,28 +17,25 @@
  */ 
 typedef struct node
 {
-    char* name;
-    struct node* first_child;
-    struct node* next;
+    ast_type type;
+    union {
+        int int_val;
+        double double_val;
+        char* id;
+    };
+    struct {
+        struct node* first_child;
+        struct node* next;
+    };
+    
 } node, *ast;
 
 
-/**
- * @brief Crée un AST vide
- * 
- * @return ast 
- */
-ast create_ast();
+ast new_node(ast_type type);
+ast new_int(int val);
+ast new_double(double val);
+ast new_id(char* id);
 
-
-/**
- * @brief Ajoute fils au noeud donné
- * 
- * @param node noeud au lequel on veut rajouter un fils
- * @param name nom du fils
- * @return ast noeud parent (arg 1)
- */
-ast add_child(node* node, char* name);
 
 /**
  * @brief Ajoute un noeud existant (peut avoir des fils) à un noeud existant
@@ -47,13 +46,7 @@ ast add_child(node* node, char* name);
  */
 ast add_child_node(node* n, node* child);
 
-/**
- * @brief Récupérer le nom d'un noeud
- * 
- * @param node Noeud dont on veut le nom
- * @return char* 
- */
-char* get_name(node* node);
+ast add_brother_node(node* n, node* brother);
 
 
 /**
@@ -72,6 +65,7 @@ ast* get_children(node * node);
  */
 void print_ast(ast tree);
 
+void print_node(ast node);
 
 /**
  * @brief Libérer mémoire de l'AST
