@@ -332,10 +332,231 @@ void print_node (ast node) {
             printf("PRINTF : %s \n", node->printf);
             break;
         case AST_LIST:
-            printf("LIST\n", node->printf);
+            printf("LIST\n");
             break;
         default:
             printf("UNDEFINED %d\n", node->type);
             break;
     }
+}
+
+
+void print_code(ast tree)
+{
+    if (tree == NULL)
+    {
+        return;
+    }
+
+    if (tree->first_child == NULL)
+    {
+        print_code_node(tree);
+    }
+    else
+    {
+        switch (tree->type) {
+            case AST_ASSIGN:
+                print_code_node(tree->first_child);
+                printf("=");
+                print_code(tree->first_child->next);
+                break;
+            case AST_ADD:
+                print_code(tree->first_child);
+                printf("+");
+                print_code(tree->first_child->next);
+                break;
+            case AST_MUL:
+                print_code(tree->first_child);
+                printf("*");
+                print_code(tree->first_child->next);
+                break;
+            case AST_DIV:
+                print_code(tree->first_child);
+                printf("/");
+                print_code(tree->first_child->next);
+                break;
+            case AST_MINUS:
+                print_code(tree->first_child);
+                printf("-");
+                print_code(tree->first_child->next);
+                break;
+            case AST_AND_OP:
+                print_code(tree->first_child);
+                printf("&&");
+                print_code(tree->first_child->next);
+                break;
+            case AST_OR_OP:
+                print_code(tree->first_child);
+                printf("||");
+                print_code(tree->first_child->next);
+                break;
+            case AST_GEQ_OP:
+                print_code(tree->first_child);
+                printf(">=");
+                print_code(tree->first_child->next);
+                break;
+            case AST_LEQ_OP:
+                print_code(tree->first_child);
+                printf("<=");
+                print_code(tree->first_child->next);
+                break;
+            case AST_GT_OP:
+                print_code(tree->first_child);
+                printf(">");
+                print_code(tree->first_child->next);
+                break;
+            case AST_LT_OP:
+                print_code(tree->first_child);
+                printf("<");
+                print_code(tree->first_child->next);
+                break;
+            case AST_NEQ_OP:
+                print_code(tree->first_child);
+                printf("!=");
+                print_code(tree->first_child->next);
+                break;
+            case AST_EQ_OP:
+                print_code(tree->first_child);
+                printf("==");
+                print_code(tree->first_child->next);
+                break;
+            case AST_WHILE:
+                print_code_node(tree);
+                printf(" (");
+                print_code(tree->first_child);
+                printf(") { ");
+                print_code(tree->first_child->next);
+                printf(" }");
+                break;
+            case AST_UMINUS:
+                print_code_node(tree);
+                print_code_node(tree->first_child);
+                break;
+            default:
+                print_code_node(tree);
+                ast ptr = tree->first_child;
+                while(ptr != NULL)
+                {
+                    print_code(ptr);
+                    ptr = ptr->next;
+                }
+        }
+
+        
+    }
+
+    return;
+}
+
+void print_code_node(ast node)
+{
+    if (node == NULL)
+        return;
+
+    switch (node->type) {
+        case AST_ID:
+            printf("%s", node->id);
+            break;  
+        case AST_INT:
+            printf("int ");
+            break;
+        case AST_DOUBLE:
+            printf("double ");
+            break;
+        case AST_INT_VAL:
+            printf("%d", node->int_val);
+            break;
+        case AST_DOUBLE_VAL:
+            printf("%f", node->double_val);
+            break;
+        case AST_ADD:
+            printf("+");
+            break;
+        case AST_MUL:
+            printf("*");
+            break;
+        case AST_DIV:
+            printf("/");
+            break;
+        case AST_MINUS:
+            printf("-");
+            break;
+        case AST_UMINUS:
+            printf("-");
+            break;
+        case AST_ASSIGN:
+            // printf("=");
+            break;
+        case AST_WHILE:
+            printf("while");
+            break;
+        case AST_IF:
+            printf("if");
+            break;
+        case AST_ELSE:
+            printf("else");
+            break;
+        case AST_MAIN:
+            printf("main");
+            break;
+        case AST_INC:
+            printf("++");
+            break;
+        case AST_DEC:
+            printf("--");
+            break;
+        case AST_RETURN:
+            printf("return");
+            break;
+        case AST_FOR:
+            printf("for");
+            break;
+        case AST_AND_OP:
+            printf("&&");
+            break;
+        case AST_OR_OP:
+            printf("||");
+            break;
+        case AST_GEQ_OP:
+            printf(">=");
+            break;
+        case AST_LEQ_OP:
+            printf("<=");
+            break;
+        case AST_GT_OP:
+            printf(">");
+            break;
+        case AST_LT_OP:
+            printf("<");
+            break;
+        case AST_NEQ_OP:
+            printf("!=");
+            break;
+        case AST_EQ_OP:
+            printf("==");
+            break;
+        case AST_STAT:
+            // printf("STATEMENT");
+            printf("\n");
+            break;
+        case AST_TABLE:
+            // printf("TABLE");
+            break;
+        case AST_DIM:
+            // printf("DIMENSIONS");
+            break;
+        case AST_ARRAY:
+            // printf("ARRAY");
+            break;
+        case AST_PRINTF:
+            printf("%s\n", node->printf);
+            break;
+        case AST_LIST:
+            // printf();
+            break;
+        default:
+            printf("UNDEFINED %d", node->type);
+            break;
+    }
+    // printf("\n");
 }

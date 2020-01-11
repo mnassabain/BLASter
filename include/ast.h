@@ -76,5 +76,8 @@ void print_node(ast node);
  */
 void free_ast(ast tree);
 
+// comme print_node mais adapté pour le code
+void print_code_node(ast node);
+void print_code(ast tree);
 
 #endif
