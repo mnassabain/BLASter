@@ -66,7 +66,7 @@ typedef struct st
 	 * Pour les variables globales 
 	 * Exemple avec un int déclaré avant un for 
 	 */
-	symbolTable* higher_scope;
+	struct st* higher_scope;
 
 } *symbolTable;
 
@@ -125,7 +125,7 @@ symbol* insert_symbol_double(symbolTable st, char* name, double value,
  * @param name nom de l'id à chercher 
  * @return symbol 
  */
-symbol* lookup(char* name);
+symbol* lookup(symbolTable st, char* name);
 
 /*
  * Remarque : lookup inutile dans le cas des cste, on ne va pas les appeler dans 
