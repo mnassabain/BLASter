@@ -33,7 +33,7 @@ endline         ;
 "--"            { if ( DEBUG_LEX ) printf("DEC "); return DEC;}
 "main"          { if ( DEBUG_LEX ) printf("MAIN "); return MAIN; }
 {macro}         { if ( DEBUG_LEX ) printf("MACRO "); }
-{printf}        { if ( DEBUG_LEX ) printf("PRINTF "); return PRINTF; }
+{printf}        { yylval.string = strdup(yytext); if ( DEBUG_LEX ) printf("PRINTF "); return PRINTF; }
 "return"        { if ( DEBUG_LEX ) printf("RETURN "); return RETURN; }
 "if"            { if ( DEBUG_LEX ) printf("IF "); return IF; }
 "while"         { if ( DEBUG_LEX ) printf("WHILE "); return WHILE; }

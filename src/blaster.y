@@ -52,6 +52,10 @@ ast arbre;
 %type <arbre>   size_list
 %type <arbre>   expression_list
 %type <arbre>   constant
+%type <arbre>   init_table_list
+%type <arbre>   initialisation_list
+%type <arbre>   initialisation
+%type <arbre>   condition_list
 
 %start axiom
 
@@ -107,7 +111,27 @@ statement:
     | selection     { $$ = $1; }
     | iteration     { $$ = $1; }
     | return        { $$ = $1; }
-    | PRINTF        { // TODO ;
+    | PRINTF        { $$ = new_printf($1); }
+    ;
+
+initialisation_list:
+    initialisation_list ',' initialisation    { $$ = add_brother_node($1, $3); }
+    | initialisation                       { $$ = $1; }
+    ;
+
+initialisation:
+    type IDENTIFIER ASSIGN expression 
+        {
+            ast assign = new_node(AST_ASSIGN);
+            add_child_node(assign, new_id($2));
+            add_child_node(assign, $4);
+            $$ = add_child_node($1, assign); 
+        }
+    | IDENTIFIER ASSIGN expression
+        {
+            $$ = new_node(AST_ASSIGN);
+            add_child_node($$, new_id($1));
+            add_child_node($$, $3);
         }
     ;
 
@@ -123,71 +147,69 @@ type:
 
 assign_list:
     assign_list ',' element     { $$ = add_brother_node($1, $3); }
-    | element                   {  $$ = $1; }
+    | element                   { $$ = $1; }
     ;
 
 element:
     IDENTIFIER  { $$ = new_id($1); }
-    | table
-        {
-            
-        }
-    | update
-        {
-
-        }
+    | table     { $$ = $1 ;}
+    | update    { $$ = $1; }
     ;
 
 table:
     IDENTIFIER size_list
         {
-
+            $$ = new_node(AST_TABLE);
+            add_child_node($$, new_id($1));
+            ast dimensions = new_node(AST_DIM);
+            add_child_node(dimensions, $2);
+            add_child_node($$, dimensions);
         }
     | IDENTIFIER size_list ASSIGN init_table
         {
-
+            $$ = new_node(AST_ASSIGN);
+            ast table = new_node(AST_TABLE);
+            add_child_node(table, new_id($1));
+            ast dimensions = new_node(AST_DIM);
+            add_child_node(dimensions, $2);
+            add_child_node(table, dimensions);
+            add_child_node($$, table);
+            add_child_node($$, $4);
         }
     ;
 
 size_list:
     size_list '[' expression ']'
         {
-
+            $$ = add_brother_node($1, $3);
         }
     | '[' expression ']'
         {
-
+            $$ = $2;
         }
     ;
 
 init_table_list:
-    init_table_list ',' init_table
-        {
-
-        }
-    | init_table
+    init_table_list ',' init_table      { $$ = add_brother_node($1, $3);  }
+    | init_table                        { $$ = $1; }
     ;
 
 init_table:
     '{' expression_list '}'
         {
-
+            $$ = new_node(AST_ARRAY);
+            add_child_node($$, $2);
         }
     | '{' init_table_list '}'
         {
-
+            $$ = new_node(AST_ARRAY);
+            add_child_node($$, $2);
         }
     ;
 
 update_list:
-    update_list ',' update
-        {
-
-        }
-    | update
-        {
-
-        }
+    update_list ',' update  { $$ = add_brother_node($1, $3);  }
+    | update                { $$ = $1; }
     ;
 
 update:
@@ -223,23 +245,16 @@ increment_action:
 selection:
     IF '(' condition ')' '{' statement_list '}'
         {
-            
-            // $$ = add_child_node($$, "selection");
-
-            // $$ = add_child_node($$, "if");
-            // $$ = add_child_node($$, $3);
-            // $$ = add_child_node($$, $6);
+            $$ = new_node(AST_IF);
+            add_child_node($$, $3);
+            add_child_node($$, $6);
         }
     | IF '(' condition ')' '{' statement_list '}' ELSE '{' statement_list '}'
         {
-            
-            // $$ = add_child_node($$, "selection");
-
-            // $$ = add_child_node($$, "if");
-            // $$ = add_child_node($$, $3);
-            // $$ = add_child_node($$, $6);
-            // $$ = add_child_node($$, "else");
-            // $$ = add_child_node($$, $10);
+            $$ = new_node(AST_IF);
+            add_child_node($$, $3);
+            add_child_node($$, $6);
+            add_child_node($$, $10);
         }   
     ;
 
@@ -247,63 +262,95 @@ iteration:
     WHILE '(' condition ')' '{' statement_list '}'
         {
             $$ = new_node(AST_WHILE);
-            $$ = add_child_node($$, $3);
-            $$ = add_child_node($$, $6);
-
+            add_child_node($$, $3);
+            add_child_node($$, $6);
         }
-    | FOR '(' declaration ';' condition ';' update_list ')' '{' statement_list '}'
+    | FOR '(' initialisation_list ';' condition_list ';' update_list ')' '{' statement_list '}'
         {
             $$ = new_node(AST_FOR);
-            add_child_node($$, $3);
-            add_child_node($$, $5);
-            add_child_node($$, $7);
-            add_child_node($$, $10);
+
+            ast init = new_node(AST_LIST);
+            add_child_node(init, $3);
+            add_child_node($$, init);
+
+            ast condition = new_node(AST_LIST);
+            add_child_node(condition, $5);
+            add_child_node($$, condition);
+
+            ast update = new_node(AST_LIST);
+            add_child_node(update, $7);
+            add_child_node($$, update);
+
+            ast statements = new_node(AST_LIST);
+            add_child_node(statements, $10);
+            add_child_node($$, statements);
         }
+    ;
+
+condition_list:
+    condition_list ',' condition    { $$ = add_brother_node($1, $3); }
+    | condition                     { $$ = $1; }
     ;
 
 condition:
     condition OR_OP condition
         {
-
+            $$ = new_node(AST_OR_OP);
+            add_child_node($$, $1);
+            add_child_node($$, $3);
         }
     | condition AND_OP condition 
         {
-
+            $$ = new_node(AST_AND_OP);
+            add_child_node($$, $1);
+            add_child_node($$, $3);
         }
     | expression GEQ_OP expression
         {
-
+            $$ = new_node(AST_GEQ_OP);
+            add_child_node($$, $1);
+            add_child_node($$, $3);
         }
     | expression '>' expression %prec GEQ_OP
         {
-
+            $$ = new_node(AST_GT_OP);
+            add_child_node($$, $1);
+            add_child_node($$, $3);
         }
     | expression LEQ_OP expression 
         {
-
+            $$ = new_node(AST_LEQ_OP);
+            add_child_node($$, $1);
+            add_child_node($$, $3);
         }
     | expression '<' expression %prec LEQ_OP
         {
-
+            $$ = new_node(AST_LT_OP);
+            add_child_node($$, $1);
+            add_child_node($$, $3);
         }
     | expression EQ_OP expression
         {
-
+            $$ = new_node(AST_EQ_OP);
+            add_child_node($$, $1);
+            add_child_node($$, $3);
         }
     | expression NEQ_OP expression
         {
-
+            $$ = new_node(AST_NEQ_OP);
+            add_child_node($$, $1);
+            add_child_node($$, $3);
         }
     | '(' condition ')'
         {
-
+            $$ = $2;
         }
     ;
 
 expression_list:
     expression_list ',' expression
         {
-            add_brother_node($$, $3);
+            $$ = add_brother_node($1, $3);
         }
     | expression
         {
@@ -378,8 +425,8 @@ int main() {
     arbre = new_node(AST_MAIN);
 
     ////////// parse a test file ///
-    // FILE* f = fopen ("test.c", "r");
-    FILE* f = fopen ("simple.c", "r");
+    FILE* f = fopen ("test.c", "r");
+    // FILE* f = fopen ("simple.c", "r");
     if (f == NULL) {
         fprintf(stderr, "Unable to open file");
         return 1;

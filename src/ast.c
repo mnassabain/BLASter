@@ -40,6 +40,16 @@ ast new_id(char* id) {
     return new_node;
 }
 
+ast new_printf(char* printf) {
+    ast new_node = (ast)malloc(sizeof(struct node));
+    new_node->type = AST_PRINTF;
+    new_node->printf = printf; /// NEEDS TO BE FREED, COMES FROM STRDUP
+    new_node->first_child = NULL;
+    new_node->next = NULL;
+
+    return new_node;
+}
+
 
 // ast add_child(ast node, ast_type type)
 // {
@@ -167,6 +177,8 @@ void free_ast(ast tree)
     // free self
     if (tree->type == AST_ID)
         free(tree->id);
+    if (tree->type == AST_PRINTF)
+        free(tree->printf);
     free(tree);
 }
 
@@ -239,19 +251,19 @@ void print_node (ast node) {
             printf("DOUBLE (%f)\n", node->double_val);
             break;
         case AST_ADD:
-            printf("+\n");
+            printf("OPERATOR (+)\n");
             break;
         case AST_MUL:
-            printf("*\n");
+            printf("OPERATOR (*)\n");
             break;
         case AST_DIV:
-            printf("/\n");
+            printf("OPERATOR (/)\n");
             break;
         case AST_MINUS:
-            printf("BINARY -\n");
+            printf("BINARY (-)\n");
             break;
         case AST_UMINUS:
-            printf("UNARY -\n");
+            printf("UNARY (-)\n");
             break;
         case AST_ASSIGN:
             printf("ASSIGN\n");
@@ -281,13 +293,46 @@ void print_node (ast node) {
             printf("FOR\n");
             break;
         case AST_AND_OP:
-            printf("&&\n");
+            printf("OPERATOR (&&)\n");
             break;
         case AST_OR_OP:
-            printf("||\n");
+            printf("OPERATOR (||)\n");
+            break;
+        case AST_GEQ_OP:
+            printf("OPERATOR (>=)\n");
+            break;
+        case AST_LEQ_OP:
+            printf("OPERATOR (<=)\n");
+            break;
+        case AST_GT_OP:
+            printf("OPERATOR (>)\n");
+            break;
+        case AST_LT_OP:
+            printf("OPERATOR (<)\n");
+            break;
+        case AST_NEQ_OP:
+            printf("OPERATOR (!=)\n");
+            break;
+        case AST_EQ_OP:
+            printf("OPERATOR (==)\n");
             break;
         case AST_STAT:
             printf("STATEMENT\n");
+            break;
+        case AST_TABLE:
+            printf("TABLE\n");
+            break;
+        case AST_DIM:
+            printf("DIMENSIONS\n");
+            break;
+        case AST_ARRAY:
+            printf("ARRAY\n");
+            break;
+        case AST_PRINTF:
+            printf("PRINTF : %s \n", node->printf);
+            break;
+        case AST_LIST:
+            printf("LIST\n", node->printf);
             break;
         default:
             printf("UNDEFINED %d\n", node->type);

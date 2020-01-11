@@ -9,7 +9,7 @@ int main() {
 
     int constante = 5; // et lui aussi
     constante = 4;
-    double non = 5.4, oui, yes;
+    double non = 5.4, oui = 2, yes;
 
     if ( (5 > 2 || 6 > 4) && a == b) {
         a = 5;
@@ -28,11 +28,12 @@ int main() {
     }
     printf("%s", bonjour); printf("%d non", aozidna);
 
-    for (i = 0, j = 5, y = -45; i < 25 ; i++, j--, k++, oui = oui+5) {
+    for (int i = 0, j = 5, y = -45; i < 25 ; i++, j--, k++, oui = oui+5) {
         a = a * 5 + 7;
+        b = 18;
     }
 
-    int table[5][6][7];
+    int table[5][6][7], t[N];
     int tableau [10] = { 4,5,6 };
 
     int tab[2][3][4] = { { {1, 2, 3, 4}, {1, 2, 3, 4}, {1, 2, 3, 4} },

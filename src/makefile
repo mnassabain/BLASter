@@ -14,7 +14,7 @@ prefixe=blaster
 all: ast.o y.tab.o lex.yy.o
 	gcc ast.o y.tab.o lex.yy.o -lfl -o $(prefixe) -g
 
-ast.o:
+ast.o: ast.c
 	gcc -c ast.c -g
 
 y.tab.o: $(prefixe).y
@@ -28,7 +28,7 @@ lex.yy.o: $(prefixe).l
 test: launch_test.o ast.o lex.yy.o
 	gcc launch_test.o ast.o y.tab.o lex.yy.o -lfl -o test -I./ -I../include/
 
-yyparse:
+yyparse: $(prefixe).y
 	yacc -d $(prefixe).y
 	gcc -c y.tab.c -I../include/ -DTESTING
 
