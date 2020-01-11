@@ -247,23 +247,38 @@ selection:
         {
             $$ = new_node(AST_IF);
             add_child_node($$, $3);
-            add_child_node($$, $6);
+
+            ast statements = new_node(AST_LIST);
+            add_child_node(statements, $6);
+            add_child_node($$, statements);
         }
     | IF '(' condition ')' '{' statement_list '}' ELSE '{' statement_list '}'
         {
             $$ = new_node(AST_IF);
             add_child_node($$, $3);
-            add_child_node($$, $6);
-            add_child_node($$, $10);
+            
+            ast statements = new_node(AST_LIST);
+            add_child_node(statements, $6);
+            add_child_node($$, statements);
+
+            statements = new_node(AST_LIST);
+            add_child_node(statements, $10);
+            add_child_node($$, statements);
         }   
     ;
 
 iteration:
-    WHILE '(' condition ')' '{' statement_list '}'
+    WHILE '(' condition_list ')' '{' statement_list '}'
         {
             $$ = new_node(AST_WHILE);
-            add_child_node($$, $3);
-            add_child_node($$, $6);
+
+            ast condition = new_node(AST_LIST);
+            add_child_node(condition, $3);
+            add_child_node($$, condition);
+
+            ast statements = new_node(AST_LIST);
+            add_child_node(statements, $6);
+            add_child_node($$, statements);
         }
     | FOR '(' initialisation_list ';' condition_list ';' update_list ')' '{' statement_list '}'
         {
