@@ -15,12 +15,14 @@ ast arbre;
 
 %union {
     char* string;
-    int value;
+    int int_val;
+    double double_val;
     ast arbre;
 }
 
 %token <string> IDENTIFIER
-%token <value> CONSTANT
+%token <int_val> INT_VAL
+%token <double_val> DOUBLE_VAL
 %token <string> STRING
 %token <string> COMMENT
 %token <string> ASSIGN IF WHILE ELSE FOR
@@ -49,6 +51,7 @@ ast arbre;
 %type <arbre>   init_table
 %type <arbre>   size_list
 %type <arbre>   expression_list
+%type <arbre>   constant
 
 %start axiom
 
@@ -67,8 +70,7 @@ ast arbre;
 axiom:
     INT MAIN '(' ')' '{' statement_list '}'
         {
-            arbre = add_child(arbre, "main");
-            arbre = add_child_node(arbre, $6);
+            add_child_node(arbre, $6);
             printf("\nFOUND\n");
             return 0;
         }
@@ -77,123 +79,55 @@ axiom:
 return:
     RETURN ';'
         {
-            $$ = create_ast();
-            $$ = add_child($$, "return");
+            $$ = new_node(AST_RETURN);
         }
     | RETURN expression ';'
         {
-            $$ = create_ast();
-            $$ = add_child($$, "return");
-
-            $$ = add_child_node($$, $2);
+            $$ = new_node(AST_RETURN);
+            add_child_node($$, $2);
         }
     ;
 
 statement_list:
-    statement_list statement
+    statement statement_list
         {
-            $$ = $1;
-            $$ = add_child_node($$, $2);
-        }
+            $$ = new_node(AST_STAT);
+            add_brother_node($$, $2);
+            add_child_node($$, $1);
+         }
     | statement
         {
-            $$ = create_ast();
-            $$ = add_child($$, "statement_list");
-            $$ = add_child_node($$, $1);
+            $$ = new_node(AST_STAT);
+            add_child_node($$, $1);
         }
     ;
 
 statement:
-    declaration ';'
-        {
-            $$ = create_ast();
-            $$ = add_child($$, "statement");
-
-            $$ = add_child_node($$, $1);
-        }
-    | selection 
-        {
-            $$ = create_ast();
-            $$ = add_child($$, "statement");
-
-            $$ = add_child_node($$, $1);
-        }
-    | iteration
-        {
-            $$ = create_ast();
-            $$ = add_child($$, "statement");
-
-            $$ = add_child_node($$, $1);
-        }
-    | return
-        {
-            $$ = create_ast();
-            $$ = add_child($$, "statement");
-
-            $$ = add_child_node($$, $1);
-        }
-    | PRINTF
-        {
-            
+    declaration ';' { $$ = $1; }
+    | selection     { $$ = $1; }
+    | iteration     { $$ = $1; }
+    | return        { $$ = $1; }
+    | PRINTF        { // TODO ;
         }
     ;
 
 declaration:
-    type assign_list
-        {
-            $$ = create_ast();
-            $$ = add_child($$, "declaration");
-            $$ = add_child_node($$, $1);
-            $$ = add_child_node($$, $2);
-        }
-    | assign_list
-        {
-            $$ = create_ast();
-            $$ = add_child($$, "declaration");
-            $$ = add_child_node($$, $1);
-        }
+    type assign_list    { $$ = add_child_node($1, $2); }
+    | assign_list       { $$ = $1; }
     ;
 
 type:
-    INT 
-        {
-            // todo: check le nom et valeur
-            $$ = create_ast();
-            $$ = add_child($$, "type");
-        }
-    | DOUBLE
-        {
-            $$ = create_ast();
-            $$ = add_child($$, "type");
-        }
+    INT         { $$ = new_node(AST_INT); }
+    | DOUBLE    { $$ = new_node(AST_DOUBLE); }
     ;
 
 assign_list:
-    assign_list ',' element
-        {
-            $$ = $1;
-            $$ = add_child($$, "assign");
-            $$ = add_child_node($$, $3);
-        }
-    | element
-        {
-            $$ = create_ast();
-            // Doit-on mettre assign uniquement quand il y en a plusieurs ou à chaque fois ?
-            $$ = add_child($$, "assign_list");
-
-            ast s = create_ast();
-            s = add_child(s, "assign");
-            s = add_child_node(s, $1);
-
-            $$ = add_child_node($$, s);
-        }
+    assign_list ',' element     { $$ = add_brother_node($1, $3); }
+    | element                   {  $$ = $1; }
     ;
 
 element:
-    IDENTIFIER
-        {
-
-        }
+    IDENTIFIER  { $$ = new_id($1); }
     | table
         {
             
@@ -258,71 +192,72 @@ update_list:
 
 update:
     increment_action IDENTIFIER
-        {
-
+        {   
+            // TODO : REVOIR PRECEDENCE OPERATEUR UNAIRES
+            $$ = add_child_node($1, new_id($2));
         }
     | IDENTIFIER increment_action
         {
-
+            // TODO : REVOIR PRECEDENCE OPERATEUR UNAIRES
+            $$ = add_child_node($2, $$ = new_id($1));
         }
     | IDENTIFIER ASSIGN expression
-        {
-
+        {   
+            $$ = new_node(AST_ASSIGN);
+            add_child_node($$, new_id($1));
+            add_child_node($$, $3);
         }
     ;
 
 increment_action:
     INC
         {
-            $$ = create_ast();
-            $$ = add_child($$, "INC");
+            $$ = new_node(AST_INC);
         }
     | DEC 
         {
-            $$ = create_ast();
-            $$ = add_child($$, "DEC");
+            $$ = new_node(AST_DEC);
         }
     ;
     
 selection:
     IF '(' condition ')' '{' statement_list '}'
         {
-            $$ = create_ast();
-            $$ = add_child($$, "selection");
+            
+            // $$ = add_child_node($$, "selection");
 
-            $$ = add_child($$, "if");
-            $$ = add_child_node($$, $3);
-            $$ = add_child_node($$, $6);
+            // $$ = add_child_node($$, "if");
+            // $$ = add_child_node($$, $3);
+            // $$ = add_child_node($$, $6);
         }
     | IF '(' condition ')' '{' statement_list '}' ELSE '{' statement_list '}'
         {
-            $$ = create_ast();
-            $$ = add_child($$, "selection");
+            
+            // $$ = add_child_node($$, "selection");
 
-            $$ = add_child($$, "if");
-            $$ = add_child_node($$, $3);
-            $$ = add_child_node($$, $6);
-            $$ = add_child($$, "else");
-            $$ = add_child_node($$, $10);
+            // $$ = add_child_node($$, "if");
+            // $$ = add_child_node($$, $3);
+            // $$ = add_child_node($$, $6);
+            // $$ = add_child_node($$, "else");
+            // $$ = add_child_node($$, $10);
         }   
     ;
 
 iteration:
     WHILE '(' condition ')' '{' statement_list '}'
         {
-            $$ = create_ast();
-            $$ = add_child($$, "while");
+            $$ = new_node(AST_WHILE);
             $$ = add_child_node($$, $3);
             $$ = add_child_node($$, $6);
+
         }
     | FOR '(' declaration ';' condition ';' update_list ')' '{' statement_list '}'
         {
-            $$ = create_ast();
-            $$ = add_child($$, "for");
-            $$ = add_child_node($$, $3);
-            $$ = add_child_node($$, $5);
-            $$ = add_child_node($$, $7);
-            $$ = add_child_node($$, $10);
+            $$ = new_node(AST_FOR);
+            add_child_node($$, $3);
+            add_child_node($$, $5);
+            add_child_node($$, $7);
+            add_child_node($$, $10);
         }
     ;
 
@@ -361,81 +296,75 @@ condition:
         }
     | '(' condition ')'
         {
-            //////////////
-            $$ = create_ast();
-            $$ = add_child($$, "condition");
+
         }
     ;
 
 expression_list:
     expression_list ',' expression
         {
-
+            add_brother_node($$, $3);
         }
     | expression
         {
-
+            $$ = $1;
         }
     ;
 
 expression:
     expression '+' expression
         {
-            $$ = create_ast();
-            $$ = add_child($$, "expression");
+            $$ = new_node(AST_ADD);
+            add_child_node($$, $1);
+            add_child_node($$, $3);
         }
     | expression '-' expression
         {
-            $$ = create_ast();
-            $$ = add_child($$, "expression");
-
-            $$ = add_child_node($$, $1);
-            $$ = add_child($$, "-");
-            $$ = add_child_node($$, $3);
+            $$ = new_node(AST_MINUS);
+            add_child_node($$, $1);
+            add_child_node($$, $3);
         }
     | expression '*' expression
         {
-            $$ = create_ast();
-            $$ = add_child($$, "expression");
-
-            $$ = add_child_node($$, $1);
-            $$ = add_child($$, "*");
-            $$ = add_child_node($$, $3);
+            $$ = new_node(AST_MUL);
+            add_child_node($$, $1);
+            add_child_node($$, $3);
         }
     | expression '/' expression
         {
-            $$ = create_ast();
-            $$ = add_child($$, "expression");
-
-            $$ = add_child_node($$, $1);
-            $$ = add_child($$, "/");
-            $$ = add_child_node($$, $3);
+            $$ = new_node(AST_DIV);
+            add_child_node($$, $1);
+            add_child_node($$, $3);
         }
     | '(' expression ')'
         {
-            $$ = create_ast();
-            $$ = add_child($$, "expression");
-
-            $$ = add_child($$, "(");
-            $$ = add_child_node($$, $2);
-            $$ = add_child($$, ")");
+            $$ = $2;
         }
     | '-' expression %prec UMINUS
         {
-            // wtf
+            $$ = new_node(AST_UMINUS);
+            add_child_node($$, $2);
         } 
     | IDENTIFIER
         {
-            $$ = create_ast();
-            $$ = add_child($$, "identifier");
+            $$ = new_id($1);
         }
-    | CONSTANT
+    | constant
         {
-            $$ = create_ast();
-            $$ = add_child($$, "constant");
+            $$ = $1;
         }
     ;
     
+constant:
+    INT_VAL
+        {
+            $$ = new_int($1);
+        }
+    | DOUBLE_VAL
+        {
+            $$ = new_double($1);
+        }
+    ;
 
 %%
 
@@ -446,10 +375,11 @@ void yyerror (char *s) {
 #ifndef TESTING
 int main() {
 
-    arbre = create_ast();
+    arbre = new_node(AST_MAIN);
 
     ////////// parse a test file ///
-    FILE* f = fopen ("test.c", "r");
+    // FILE* f = fopen ("test.c", "r");
+    FILE* f = fopen ("simple.c", "r");
     if (f == NULL) {
         fprintf(stderr, "Unable to open file");
         return 1;
@@ -462,6 +392,7 @@ int main() {
     // Affichage de l'arbre 
     print_ast(arbre);
 
+    // Clean
     free_ast(arbre);
     lex_free();
     fclose(f);

@@ -20,7 +20,8 @@ inline_comment  \/\/.*$
 comment_multi   \/\*([^*]*[*]+[^*\/])*[^*]*[*]+\/
 identifier      [a-zA-Z_][a-zA-Z0-9_]*
 macro           #(define|include).*$
-constant        ((([0-9])*\.[0-9]*)|([0-9]+\.)|([0-9]+))([eE][+-]?[0-9]+)?
+int             [0-9]*
+double          ((([0-9])*\.[0-9]*)|([0-9]+\.)|([0-9]+))([eE][+-]?[0-9]+)?
 string          \"(\\.|[^\"\\])*\"
 printf          printf([[:space:]])?\({string}[^;]*;
 endline         ;
@@ -46,11 +47,12 @@ endline         ;
 "<="            { if ( DEBUG_LEX ) printf("LEQ_OP "); return LEQ_OP;}
 "=="            { if ( DEBUG_LEX ) printf("EQ_OP "); return EQ_OP;}
 "!="            { if ( DEBUG_LEX ) printf("NEQ_OP "); return NEQ_OP;}
-{identifier}    { if ( DEBUG_LEX ) printf("IDENTIFIER "); return IDENTIFIER; }
-{constant}      { if ( DEBUG_LEX ) printf("CONSTANT "); return CONSTANT; }
+{identifier}    { yylval.string = strdup(yytext); if ( DEBUG_LEX ) printf("IDENTIFIER "); return IDENTIFIER; }
+{int}           { yylval.int_val = atoi(yytext); if ( DEBUG_LEX ) printf("INT_VAL "); return INT_VAL; }
+{double}        { yylval.double_val = atof(yytext); if ( DEBUG_LEX ) printf("DOUBLE_VAL "); return DOUBLE_VAL; }
 {inline_comment} { if ( DEBUG_LEX ) printf("COMMENT "); /* printf("%s\n", yytext); */ }
 {comment_multi} { if ( DEBUG_LEX ) printf("COMMENT "); /* printf("%s\n", yytext); */ }
-[ \t\n\r]         { if ( DEBUG_LEX ) printf("%s",yytext); }
+[ \t\n\r]       { if ( DEBUG_LEX ) printf("%s",yytext); }
 .               { if ( DEBUG_LEX ) printf("%s",yytext);  return yytext[0]; }
 
 %%

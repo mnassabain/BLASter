@@ -1,49 +1,74 @@
 #include "../include/ast.h"
 
-ast create_ast()
-{
-    return NULL;
-}
 
-ast add_child(ast node, char* name)
-{
+ast new_node(ast_type type) {
     ast new_node = (ast)malloc(sizeof(struct node));
-    new_node->name = malloc(MAX_NAME);
-    strcpy(new_node->name, name); // strcpy
+    new_node->type = type;
     new_node->first_child = NULL;
     new_node->next = NULL;
 
-    if (node == NULL)
-    {
-        return new_node;
-    }
-
-    if (node->first_child == NULL)
-    {
-        node->first_child = new_node;
-        return node;
-    }
-
-    ast ptr = node->first_child;
-    while(ptr->next != NULL)
-    {
-        ptr = ptr->next;
-    }
-
-    ptr->next = new_node;
-
-    return node;
+    return new_node;
 }
 
-char* get_name(ast node)
-{
-    if (node != NULL)
-    {
-        return node->name;
-    }
+ast new_int(int val) {
+    ast new_node = (ast)malloc(sizeof(struct node));
+    new_node->type = AST_INT_VAL;
+    new_node->int_val = val;
+    new_node->first_child = NULL;
+    new_node->next = NULL;
 
-    return "";
+    return new_node;
 }
+
+ast new_double(double val) {
+    ast new_node = (ast)malloc(sizeof(struct node));
+    new_node->type = AST_DOUBLE_VAL;
+    new_node->double_val = val;
+    new_node->first_child = NULL;
+    new_node->next = NULL;
+
+    return new_node;
+}
+
+ast new_id(char* id) {
+    ast new_node = (ast)malloc(sizeof(struct node));
+    new_node->type = AST_ID;
+    new_node->id = id; /// NEEDS TO BE FREED, COMES FROM STRDUP
+    new_node->first_child = NULL;
+    new_node->next = NULL;
+
+    return new_node;
+}
+
+
+// ast add_child(ast node, ast_type type)
+// {
+//     ast new_node = (ast)malloc(sizeof(struct node));
+//     new_node->type = type;
+//     new_node->first_child = NULL;
+//     new_node->next = NULL;
+
+//     if (node == NULL)
+//     {
+//         return new_node;
+//     }
+
+//     if (node->first_child == NULL)
+//     {
+//         node->first_child = new_node;
+//         return node;
+//     }
+
+//     ast ptr = node->first_child;
+//     while(ptr->next != NULL)
+//     {
+//         ptr = ptr->next;
+//     }
+
+//     ptr->next = new_node;
+
+//     return node;
+// }
 
 ast* get_children(ast node)
 {
@@ -91,9 +116,10 @@ void print_ast_aux(ast tree, int depth)
     int i;
     for(i = 0; i < depth; i++)
     {
-        printf("  ");
+        printf("\t");
     }
-    printf("%s\n", tree->name);
+    // printf("%s\n", tree->name);
+    print_node(tree);
 
     ast ptr = tree->first_child;
     while(ptr != NULL)
@@ -110,7 +136,8 @@ void print_ast(ast tree)
         return;
     }
 
-    printf("%s\n", tree->name);
+    // printf("%s\n", tree->name);
+    print_node(tree);
 
     ast ptr = tree->first_child;
     while(ptr != NULL)
@@ -138,7 +165,8 @@ void free_ast(ast tree)
     }
 
     // free self
-    free(tree->name);
+    if (tree->type == AST_ID)
+        free(tree->id);
     free(tree);
 }
 
@@ -165,4 +193,104 @@ ast add_child_node(node* n, node* child)
     ptr->next = child;
 
     return n;
+}
+
+ast add_brother_node(node* n, node* brother) {
+    if (n == NULL)
+    {
+        return brother;
+    }
+
+    if (n->next == NULL) {
+        n->next = brother;
+        return n;
+    }
+
+    ast ptr = n->next;
+    while(ptr->next != NULL)
+    {
+        ptr = ptr->next;
+    }
+
+    ptr->next = brother;
+
+    return n;
+}
+
+void print_node (ast node) {
+
+    if (node == NULL)
+        return;
+
+    switch (node->type) {
+        case AST_ID:
+            printf("ID (%s)\n", node->id);
+            break;  
+        case AST_INT:
+            printf("TYPE INT\n");
+            break;
+        case AST_DOUBLE:
+            printf("TYPE DOUBLE\n");
+            break;
+        case AST_INT_VAL:
+            printf("INT (%d)\n", node->int_val);
+            break;
+        case AST_DOUBLE_VAL:
+            printf("DOUBLE (%f)\n", node->double_val);
+            break;
+        case AST_ADD:
+            printf("+\n");
+            break;
+        case AST_MUL:
+            printf("*\n");
+            break;
+        case AST_DIV:
+            printf("/\n");
+            break;
+        case AST_MINUS:
+            printf("BINARY -\n");
+            break;
+        case AST_UMINUS:
+            printf("UNARY -\n");
+            break;
+        case AST_ASSIGN:
+            printf("ASSIGN\n");
+            break;
+        case AST_WHILE:
+            printf("WHILE\n");
+            break;
+        case AST_IF:
+            printf("IF\n");
+            break;
+        case AST_ELSE:
+            printf("ELSE\n");
+            break;
+        case AST_MAIN:
+            printf("MAIN\n");
+            break;
+        case AST_INC:
+            printf("++\n");
+            break;
+        case AST_DEC:
+            printf("--\n");
+            break;
+        case AST_RETURN:
+            printf("RETURN\n");
+            break;
+        case AST_FOR:
+            printf("FOR\n");
+            break;
+        case AST_AND_OP:
+            printf("&&\n");
+            break;
+        case AST_OR_OP:
+            printf("||\n");
+            break;
+        case AST_STAT:
+            printf("STATEMENT\n");
+            break;
+        default:
+            printf("UNDEFINED %d\n", node->type);
+            break;
+    }
 }
