@@ -555,14 +555,18 @@ void print_code(ast tree, int indent)
             print_code(tree->first_child->next, 0);
             break;
         case AST_AND_OP:
+            printf("(");
             print_code(tree->first_child, 0);
             printf("&&");
             print_code(tree->first_child->next, 0);
+            printf(")");
             break;
         case AST_OR_OP:
+            printf("(");
             print_code(tree->first_child, 0);
             printf("||");
             print_code(tree->first_child->next, 0);
+            printf(")");
             break;
         case AST_GEQ_OP:
             print_code(tree->first_child, 0);
