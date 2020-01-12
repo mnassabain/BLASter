@@ -193,6 +193,7 @@ ast delete_children(ast node)
         ptr = next;
     }
 
+    node->first_child = NULL;
     return node;
 }
 
@@ -213,13 +214,11 @@ ast add_child_node(node* n, node* child)
     ast ptr = n->first_child;
     while(ptr->next != NULL)
     {
-        printf("seeing next\n");
         ptr = ptr->next;
     }
 
     ptr->next = child;
     child->prev = ptr;
-    printf("child added\n");
     return n;
 }
 
@@ -348,6 +347,9 @@ void print_node(ast node) {
             break;
         case AST_LIST:
             print_list(node->list_type);
+            break;
+        case AST_FUN:
+            printf("function_biblio();\n");
             break;
         default:
             printf("UNDEFINED %d\n", node->type);
@@ -594,6 +596,9 @@ void print_code(ast tree, int indent)
             }
             printf(" } ");
             break;
+        case AST_FUN:
+            printf("function_biblio();\n");
+            break;
         default:
             printf("ERROR");
     }
@@ -700,6 +705,44 @@ void swap_nodes(node* n1, node* n2) {
     }
 }
 
+
+void replace(ast tree)
+{
+    if (tree == NULL)
+    {
+        return;
+    }
+
+    if (tree->type == AST_ASSIGN)
+    {
+        if (tree->first_child->type == AST_ID
+         && tree->first_child->next->type == AST_ADD
+         && tree->first_child->next->first_child->type == AST_ID
+         && tree->first_child->next->first_child->next->type == AST_MUL
+         && tree->first_child->next->first_child->next->first_child->type == AST_ID
+         && tree->first_child->next->first_child->next->first_child->next->type == AST_ID
+        )
+        {
+            ast arg1 = new_id(strdup(tree->first_child->id));
+            ast arg2 = new_id(strdup(tree->first_child->next->first_child->id));
+            ast arg3 = new_id(strdup(tree->first_child->next->first_child->next->first_child->id));
+            ast arg4 = new_id(strdup(tree->first_child->next->first_child->next->first_child->next->id));
+            delete_children(tree);
+            tree->type = AST_FUN;
+            add_child_node(tree, arg1);
+            add_child_node(tree, arg2);
+            add_child_node(tree, arg3);
+            add_child_node(tree, arg4);
+        }
+    } else {
+        ast ptr = tree->first_child;
+        while(ptr != NULL)
+        {
+            replace(ptr);
+            ptr = ptr->next;
+        }
+    }
+}
 
 int compare(ast tree1, ast tree2)
 {
