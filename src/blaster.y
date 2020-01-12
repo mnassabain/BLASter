@@ -28,7 +28,7 @@ ast arbre;
 %token <string> COMMENT
 %token <string> ASSIGN IF WHILE ELSE FOR
 %token <string> MACRO MAIN RETURN
-%token <string> INT DOUBLE
+%token <string> INT DOUBLE VOID
 %token <string> INC DEC
 %token <string> PRINTF
 %token <string> AND_OP OR_OP GEQ_OP LEQ_OP EQ_OP NEQ_OP
@@ -511,9 +511,9 @@ int main(int argc, char** argv) {
 
 
     ////////// parse a test file ///
-    // FILE* f = fopen ("test.c", "r");
+    FILE* f = fopen ("test.c", "r");
     // FILE* f = fopen ("simple.c", "r");
-    FILE* f = fopen ("exemple.c", "r");
+    // FILE* f = fopen ("exemple.c", "r");
     if (f == NULL) {
         fprintf(stderr, "Unable to open file");
         return 1;

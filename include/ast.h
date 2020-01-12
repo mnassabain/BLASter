@@ -8,9 +8,9 @@
 
 #define MAX_NAME 100
 
-typedef enum ast_type { AST_ID, AST_INT, AST_DOUBLE, AST_INT_VAL, AST_DOUBLE_VAL, AST_ADD, AST_MUL, AST_DIV, AST_MINUS, AST_UMINUS, AST_ASSIGN, AST_WHILE, AST_IF, AST_MAIN, AST_INC, AST_DEC, AST_RETURN, AST_FOR, AST_AND_OP, AST_OR_OP, AST_GEQ_OP, AST_LEQ_OP, AST_GT_OP, AST_LT_OP, AST_EQ_OP, AST_NEQ_OP,AST_STAT, AST_TABLE, AST_DIM, AST_ARRAY, AST_PRINTF, AST_LIST, AST_FUN } ast_type;
+typedef enum ast_type { AST_ID, AST_INT, AST_DOUBLE, AST_INT_VAL, AST_DOUBLE_VAL, AST_ADD, AST_MUL, AST_DIV, AST_MINUS, AST_UMINUS, AST_ASSIGN, AST_WHILE, AST_IF, AST_MAIN, AST_INC, AST_DEC, AST_RETURN, AST_FOR, AST_AND_OP, AST_OR_OP, AST_GEQ_OP, AST_LEQ_OP, AST_GT_OP, AST_LT_OP, AST_EQ_OP, AST_NEQ_OP,AST_STAT, AST_TABLE, AST_DIM, AST_ARRAY, AST_PRINTF, AST_LIST, AST_FUNC, AST_VOID} ast_type;
 
-typedef enum list_type {LIST_COND, LIST_STAT, LIST_INIT, LIST_UPDATE} list_type;
+typedef enum list_type {LIST_COND, LIST_STAT, LIST_INIT, LIST_UPDATE, LIST_FUNC, LIST_ARG} list_type;
 /* 
  * IMPORTANT: même si avec cette structure on peut ajouter des frères au
  *   noeud racine, on ne va pas le faire; nous allons nous concentrer sur les
@@ -166,6 +166,13 @@ void print_code(ast tree, int indent);
 void print_list(list_type list);
 
 /**
+ * @brief Retourne le nombre d'enfants d'un noeud
+ * 
+ * @param node le noeud dont on veut connaire le nombre d'enfants
+ */
+int count_child(ast node);
+
+/**
  * @brief Comparer 2 ast
  * 
  * @param tree1 
@@ -180,5 +187,4 @@ int compare(ast tree1, ast tree2);
  * @param tree ast sur lequel on veut travailler 
  */
 void replace(ast tree);
-
 #endif

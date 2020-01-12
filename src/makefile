@@ -25,8 +25,18 @@ lex.yy.o: $(prefixe).l
 	lex $(prefixe).l
 	gcc -c lex.yy.c -g
 
+
+# test target
 test: launch_test.o ast.o lex.yy.o
 	gcc launch_test.o ast.o y.tab.o lex.yy.o -lfl -o test -I./ -I../include/
+
+# spec parser
+spec: specParser.o ast.o lex.yy.o 
+	gcc specParser.o ast.o lex.yy.o -lfl -o spec -I./ -I../include/
+
+specParser.o: specParser.y
+	yacc -d specParser.y
+	gcc -c y.tab.c -I../include/ -o specParser.o
 
 yyparse: $(prefixe).y
 	yacc -d $(prefixe).y
