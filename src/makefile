@@ -25,6 +25,25 @@ lex.yy.o: $(prefixe).l
 	lex $(prefixe).l
 	gcc -c lex.yy.c -g
 
+# final target
+final_target: ast.o blaster.o spec.o lex.yy.o lex.zz.o main.o
+	gcc ast.o blaster.o spec.o lex.yy.o lex.zz.o main.o -lfl -o $(prefixe) -g -o blaster
+
+main.o: main.c
+	gcc -c main.c -g -I../include/ -g
+
+lex.zz.o: spec.l blaster.y
+	lex spec.l
+	sed -i -e 's/zzwrap/yywrap/g' lex.zz.c
+	gcc -c lex.zz.c -g
+
+blaster.o: blaster.y
+	yacc -d $(prefixe).y
+	gcc -c y.tab.c -I../include/ -g -DTESTING -o blaster.o
+
+spec.o: specParser.y
+	yacc -d specParser.y --output specParser.c -p zz
+	gcc -c specParser.c -g -I../include/ -o spec.o -DSPEC_PARSER
 
 # test target
 test: launch_test.o ast.o lex.yy.o
@@ -46,4 +65,4 @@ launch_test.o: yyparse
 	gcc -c ../tests/grammar/launch_test.c -I./ -I../include/
 
 clean:
-	rm -f *.o y.tab.c y.tab.h lex.yy.c y.output a.out $(prefixe) ast.o test
+	rm -f *.o y.tab.c y.tab.h lex.yy.c lex.zz.c y.output a.out $(prefixe) ast.o test spec specParser.h specParser.c

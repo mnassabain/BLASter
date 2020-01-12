@@ -2,13 +2,12 @@
 #include <stdio.h>
 #include <string.h>
 #include "ast.h"
-#define yyparse specParser
 
-int yylex();
-void yyerror(char*);
+int zzlex();
+void zzerror(char*);
 void lex_free();
 extern int yylineno;
-extern FILE* yyin;
+extern FILE* zzin;
 
 ast specTree;
 
@@ -505,7 +504,7 @@ constant:
 
 %%
 
-void yyerror (char *s) {
+void zzerror (char *s) {
     fprintf(stderr, "[Yacc] error line %d: %s\n", yylineno, s);
 }
 

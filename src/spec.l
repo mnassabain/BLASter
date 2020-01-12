@@ -3,13 +3,19 @@
 #include <stdio.h>
 // Doit être AVANT y.tab.h
 #include "../include/ast.h"
-#include "y.tab.h"
+#include "specParser.h"
+
 
 extern int DEBUG_LEX;
+// if ((debug = getenv ("DEBUG_LEX")) != NULL) {
+//     DEBUG_LEX = atoi(debug);
+// }
+
 
 /// MACROS AND COMMENTS IGNORED, NEED TO BE COPIED IN DESTINATION FILE
 %}
 
+%option prefix="zz"
 %option yylineno
 
 inline_comment  \/\/.*$
@@ -29,7 +35,7 @@ endline         ;
 "--"            { if ( DEBUG_LEX ) printf("DEC "); return DEC;}
 "main"          { if ( DEBUG_LEX ) printf("MAIN "); return MAIN; }
 {macro}         { if ( DEBUG_LEX ) printf("MACRO "); }
-{printf}        { yylval.string = strdup(yytext); if ( DEBUG_LEX ) printf("PRINTF "); return PRINTF; }
+{printf}        { zzlval.string = strdup(yytext); if ( DEBUG_LEX ) printf("PRINTF "); return PRINTF; }
 "return"        { if ( DEBUG_LEX ) printf("RETURN "); return RETURN; }
 "if"            { if ( DEBUG_LEX ) printf("IF "); return IF; }
 "while"         { if ( DEBUG_LEX ) printf("WHILE "); return WHILE; }
@@ -44,9 +50,9 @@ endline         ;
 "<="            { if ( DEBUG_LEX ) printf("LEQ_OP "); return LEQ_OP;}
 "=="            { if ( DEBUG_LEX ) printf("EQ_OP "); return EQ_OP;}
 "!="            { if ( DEBUG_LEX ) printf("NEQ_OP "); return NEQ_OP;}
-{identifier}    { yylval.string = strdup(yytext); if ( DEBUG_LEX ) printf("IDENTIFIER "); return IDENTIFIER; }
-{int}           { yylval.int_val = atoi(yytext); if ( DEBUG_LEX ) printf("INT_VAL "); return INT_VAL; }
-{double}        { yylval.double_val = atof(yytext); if ( DEBUG_LEX ) printf("DOUBLE_VAL "); return DOUBLE_VAL; }
+{identifier}    { zzlval.string = strdup(yytext); if ( DEBUG_LEX ) printf("IDENTIFIER "); return IDENTIFIER; }
+{int}           { zzlval.int_val = atoi(yytext); if ( DEBUG_LEX ) printf("INT_VAL "); return INT_VAL; }
+{double}        { zzlval.double_val = atof(yytext); if ( DEBUG_LEX ) printf("DOUBLE_VAL "); return DOUBLE_VAL; }
 {inline_comment} { if ( DEBUG_LEX ) printf("COMMENT "); /* printf("%s\n", yytext); */ }
 {comment_multi} { if ( DEBUG_LEX ) printf("COMMENT "); /* printf("%s\n", yytext); */ }
 [ \t\n\r]       { if ( DEBUG_LEX ) printf("%s",yytext); }
@@ -55,7 +61,7 @@ endline         ;
 %%
 
 // Free the memory allocated for Lex when we are done.
-void lex_yyfree() {
+void lex_zzfree() {
   yy_delete_buffer(YY_CURRENT_BUFFER);
   free(yy_buffer_stack);
 }
