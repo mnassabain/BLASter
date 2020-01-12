@@ -47,10 +47,14 @@ int main (int argc, char** argv) {
     yyparse(); // parse source code
 
     // Affichage de l'arbre 
-    // print_ast(arbre);
+    if (opt_print_ast == 1)
+        print_ast(arbre);
     // print_code(arbre, 0);
 
     replace(arbre);
+
+    if (opt_print_ast == 1)
+        print_ast(arbre);
 
     print_code(arbre, 0);
 

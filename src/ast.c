@@ -113,7 +113,7 @@ void print_ast_aux(ast tree, int depth)
     int i;
     for(i = 0; i < depth; i++)
     {
-        fprintf(output_d, "    ");
+        printf("    ");
     }
     // fprintf(output_d, "%s\n", tree->name);
     print_node(tree);
