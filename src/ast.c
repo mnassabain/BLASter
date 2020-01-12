@@ -699,3 +699,47 @@ void swap_nodes(node* n1, node* n2) {
         n1->next = tmp_next;
     }
 }
+
+
+int compare(ast tree1, ast tree2)
+{
+    if (tree1 == NULL)
+    {
+        return tree2 == NULL;
+    }
+
+    if (tree2 == NULL)
+    {
+        return tree1 == NULL;
+    }
+
+    if (tree1->type == tree2->type)
+    {
+        ast ptr1 = tree1->first_child;
+        ast ptr2 = tree2->first_child;
+
+        while(ptr1 != NULL && ptr2 != NULL)
+        {
+            if (compare(ptr1, ptr2) != 0)
+            {
+                ptr1 = ptr1->next;
+                ptr2 = ptr2->next;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        if (ptr1 != ptr2)
+        {
+            return 0;
+        }
+    }
+    else
+    {
+        return 0;
+    }
+
+    return 1;
+}

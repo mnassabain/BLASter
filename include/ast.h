@@ -165,4 +165,14 @@ void print_code(ast tree, int indent);
  */
 void print_list(list_type list);
 
+/**
+ * @brief Comparer 2 ast
+ * 
+ * @param tree1 
+ * @param tree2 
+ * @return int 0 si tree1 != tree2, !=0 sinon
+ */
+int compare(ast tree1, ast tree2);
+
+
 #endif
