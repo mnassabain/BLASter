@@ -1,6 +1,7 @@
 %{
 #include <stdio.h>
 #include <string.h>
+#include <getopt.h>
 #include "ast.h"
 
 int yylex();
@@ -457,7 +458,57 @@ void yyerror (char *s) {
 }
 
 #ifndef TESTING
-int main() {
+int main(int argc, char** argv) {
+
+    /*
+    printf("\n888888b.   888             d8888  .d8888b.  888\n");                    
+    printf("888  \"88b  888            d88888 d88P  Y88b 888\n");                    
+    printf("888  .88P  888           d88P888 Y88b.      888\n");                    
+    printf("8888888K.  888          d88P 888  \"Y888b.   888888 .d88b.  888d888\n");  
+    printf("888  \"Y88b 888         d88P  888     \"Y88b. 888   d8P  Y8b 888P\"\n");    
+    printf("888    888 888        d88P   888       \"888 888   88888888 888\n");      
+    printf("888   d88P 888       d8888888888 Y88b  d88P Y88b. Y8b.     888\n");      
+    printf("8888888P\"  88888888 d88P     888  \"Y8888P\"   \"Y888 \"Y8888  888\n");
+    printf("\n888888888888888888888888888888888888888888888888888888888888888888\n\n");
+
+    int opt, optindex;
+    struct option options[] = {
+        {"version", no_argument, 0, 'v' },
+        {"tos", no_argument, 0, 't' },
+        {"ast", no_argument, 0, 'a' },
+        {"output", required_argument, 0, 'o' }
+    };
+
+    char * output_file;
+
+    while((opt = getopt_long(argc, argv, "vtao:", options, &optindex)) != -1)
+    {
+        switch(opt)
+        {
+            case 'v':
+                printf("Membres du projet:\n");
+                printf(" * CHRISTOFFEL Quentin\n");
+                printf(" * WENDLING Nicolas\n");
+                printf(" * NASSABAIN Marco\n");
+                break;
+            case 't':
+                printf("option tos\n");
+                break;
+            case 'a':
+                printf("option ast\n");
+                break;
+            case 'o':
+                printf("option output with arg: %s\n", optarg);
+                output_file = optarg;
+                break;
+            default:
+                printf("option non gérée\n");
+        }
+    }
+
+    printf("output file = %s\n", output_file);
+    */
+
 
     ////////// parse a test file ///
     FILE* f = fopen ("test.c", "r");
