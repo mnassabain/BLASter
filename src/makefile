@@ -14,7 +14,7 @@ prefixe=blaster
 all: ast.o y.tab.o lex.yy.o
 	gcc ast.o y.tab.o lex.yy.o -lfl -o $(prefixe) -g
 
-ast.o: ast.c
+ast.o: ast.c ../include/ast.h
 	gcc -c ast.c -g
 
 y.tab.o: $(prefixe).y

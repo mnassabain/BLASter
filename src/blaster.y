@@ -511,9 +511,9 @@ int main(int argc, char** argv) {
 
 
     ////////// parse a test file ///
-    FILE* f = fopen ("test.c", "r");
+    // FILE* f = fopen ("test.c", "r");
     // FILE* f = fopen ("simple.c", "r");
-    // FILE* f = fopen ("exemple.c", "r");
+    FILE* f = fopen ("exemple.c", "r");
     if (f == NULL) {
         fprintf(stderr, "Unable to open file");
         return 1;
@@ -527,6 +527,24 @@ int main(int argc, char** argv) {
     print_ast(arbre);
 
     print_code(arbre, 0);
+
+
+    // TEST SWAP
+    ast racine = new_node(AST_MAIN);
+    ast fils1 = new_node(AST_ADD);
+    ast fils2 = new_node(AST_MINUS);
+    ast fils3 = new_node(AST_MUL);
+    ast fils4 = new_node(AST_DIV);
+    add_child_node(racine, fils1);
+    add_child_node(racine, fils2);
+    add_child_node(racine, fils3);
+    add_child_node(racine, fils4);
+
+    
+    print_ast(racine);
+    swap_nodes(fils1, fils3);
+    print_ast(racine);
+
     // Clean
     delete_node(arbre);
     lex_free();
