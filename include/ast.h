@@ -133,7 +133,8 @@ ast delete_children(ast node);
  * @brief Générer un code source à partir d'un AST
  * 
  * @param tree AST à transformer en code
+ * @param indent indentation
  */
-void print_code(ast tree);
+void print_code(ast tree, int indent);
 
 #endif
