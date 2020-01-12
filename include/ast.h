@@ -10,6 +10,7 @@
 
 typedef enum ast_type { AST_ID, AST_INT, AST_DOUBLE, AST_INT_VAL, AST_DOUBLE_VAL, AST_ADD, AST_MUL, AST_DIV, AST_MINUS, AST_UMINUS, AST_ASSIGN, AST_WHILE, AST_IF, AST_ELSE, AST_MAIN, AST_INC, AST_DEC, AST_RETURN, AST_FOR, AST_AND_OP, AST_OR_OP, AST_GEQ_OP, AST_LEQ_OP, AST_GT_OP, AST_LT_OP, AST_EQ_OP, AST_NEQ_OP,AST_STAT, AST_TABLE, AST_DIM, AST_ARRAY, AST_PRINTF, AST_LIST} ast_type;
 
+typedef enum list_type {LIST_COND, LIST_STAT, LIST_INIT, LIST_UPDATE} list_type;
 /* 
  * IMPORTANT: même si avec cette structure on peut ajouter des frères au
  *   noeud racine, on ne va pas le faire; nous allons nous concentrer sur les
@@ -23,6 +24,7 @@ typedef struct node
         double double_val;
         char* id;
         char* printf;
+        list_type list_type;
     };
     struct {
         struct node* first_child;
@@ -70,6 +72,14 @@ ast new_id(char* id);
  * @return ast noeud créé
  */
 ast new_printf(char* printf);
+
+/**
+ * @brief Crée un noeud de type list qui est une liste de list_type
+ * 
+ * @param list_type le type de liste à créer
+ * @return ast noeud créé
+ */
+ast new_list(list_type list_type);
 
 /**
  * @brief Ajoute un noeud existant (peut avoir des fils) à un noeud existant
@@ -136,5 +146,12 @@ ast delete_children(ast node);
  * @param indent indentation
  */
 void print_code(ast tree, int indent);
+
+/**
+ * @brief Affiche le type d'une enum list_type
+ * 
+ * @param list le type de liste
+ */
+void print_list(list_type list);
 
 #endif

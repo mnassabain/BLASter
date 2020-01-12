@@ -75,7 +75,7 @@ axiom:
     INT MAIN '(' ')' '{' statement_list '}'
         {   
             arbre = new_node(AST_MAIN);
-            ast list = new_node(AST_LIST);
+            ast list = new_list(LIST_STAT);
             add_child_node(list, $6);
             add_child_node(arbre, list);
             printf("\nFOUND\n");
@@ -251,7 +251,7 @@ selection:
             $$ = new_node(AST_IF);
             add_child_node($$, $3);
 
-            ast statements = new_node(AST_LIST);
+            ast statements = new_list(LIST_STAT);
             add_child_node(statements, $6);
             add_child_node($$, statements);
         }
@@ -260,11 +260,11 @@ selection:
             $$ = new_node(AST_IF);
             add_child_node($$, $3);
             
-            ast statements = new_node(AST_LIST);
+            ast statements = new_list(LIST_STAT);
             add_child_node(statements, $6);
             add_child_node($$, statements);
 
-            statements = new_node(AST_LIST);
+            statements = new_list(LIST_STAT);
             add_child_node(statements, $10);
             add_child_node($$, statements);
         }   
@@ -275,11 +275,11 @@ iteration:
         {
             $$ = new_node(AST_WHILE);
 
-            ast condition = new_node(AST_LIST);
+            ast condition = new_list(LIST_COND);
             add_child_node(condition, $3);
             add_child_node($$, condition);
 
-            ast statements = new_node(AST_LIST);
+            ast statements = new_list(LIST_STAT);
             add_child_node(statements, $6);
             add_child_node($$, statements);
         }
@@ -287,19 +287,19 @@ iteration:
         {
             $$ = new_node(AST_FOR);
 
-            ast init = new_node(AST_LIST);
+            ast init = new_list(LIST_INIT);
             add_child_node(init, $3);
             add_child_node($$, init);
 
-            ast condition = new_node(AST_LIST);
+            ast condition = new_list(LIST_COND);
             add_child_node(condition, $5);
             add_child_node($$, condition);
 
-            ast update = new_node(AST_LIST);
+            ast update = new_list(LIST_UPDATE);
             add_child_node(update, $7);
             add_child_node($$, update);
 
-            ast statements = new_node(AST_LIST);
+            ast statements = new_list(LIST_STAT);
             add_child_node(statements, $10);
             add_child_node($$, statements);
         }

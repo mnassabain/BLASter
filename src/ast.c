@@ -50,6 +50,16 @@ ast new_printf(char* printf) {
     return new_node;
 }
 
+ast new_list(list_type list_type) {
+    ast new_node = (ast)malloc(sizeof(struct node));
+    new_node->type = AST_LIST;
+    new_node->list_type = list_type;
+    new_node->first_child = NULL;
+    new_node->next = NULL;
+
+    return new_node;
+}
+
 ast* get_children(ast node)
 {
     if (node == NULL)
@@ -96,7 +106,7 @@ void print_ast_aux(ast tree, int depth)
     int i;
     for(i = 0; i < depth; i++)
     {
-        printf("\t");
+        printf("    ");
     }
     // printf("%s\n", tree->name);
     print_node(tree);
@@ -329,7 +339,7 @@ void print_node(ast node) {
             printf("PRINTF : %s \n", node->printf);
             break;
         case AST_LIST:
-            printf("LIST\n");
+            print_list(node->list_type);
             break;
         default:
             printf("UNDEFINED %d\n", node->type);
@@ -342,7 +352,7 @@ void indent_code(int indent) {
     int i;
     for(i = 0; i < indent; i++)
     {
-        printf("\t");
+        printf("    ");
     }
 }
 
@@ -689,4 +699,25 @@ int count_child(ast node) {
     }
 
     return count;
+}
+
+void print_list(list_type list) {
+    printf("LIST ");
+    switch (list) {
+        case LIST_COND:
+            printf("( CONDITIONS )");
+            break;
+        case LIST_STAT:
+            printf("( STATEMENTS )");
+            break;
+        case LIST_INIT:
+            printf("( INITIALISATIONS )");
+            break;
+        case LIST_UPDATE:
+            printf("( UPDATES )");
+            break;
+        default:
+            printf("UNDEFINED");
+    }
+    printf("\n");
 }
