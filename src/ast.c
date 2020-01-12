@@ -755,6 +755,7 @@ void replace(ast tree)
 
     if (tree->type == AST_ASSIGN)
     {
+        // MULAC
         if (tree->first_child->type == AST_ID
          && tree->first_child->next->type == AST_ADD
          && tree->first_child->next->first_child->type == AST_ID
@@ -784,7 +785,51 @@ void replace(ast tree)
             strcpy(tree->id, "mulac");
             add_child_node(tree, arg_list);
         }
-    } else {
+    }
+    else if (tree->type == AST_FOR) {
+        // level 1
+        if (tree->first_child->type == AST_LIST
+         && tree->first_child->list_type == LIST_INIT
+         && tree->first_child->first_child->type == AST_INT
+         && tree->first_child->first_child->first_child->type == AST_ASSIGN
+         && tree->first_child->first_child->first_child->first_child->type == AST_ID
+         // && tree->first_child->first_child->first_child->first_child->next->type == AST_ID
+         && tree->first_child->next->type == AST_LIST
+         && tree->first_child->next->list_type == LIST_COND
+         && tree->first_child->next->first_child->type == AST_LT_OP ///////////////////////////////////
+         && tree->first_child->next->first_child->first_child->type == AST_ID
+         && tree->first_child->next->first_child->first_child->next->type == AST_ID
+         && tree->first_child->next->next->type == AST_LIST
+         && tree->first_child->next->next->list_type == LIST_UPDATE
+         && tree->first_child->next->next->first_child->type == AST_INC
+         && tree->first_child->next->next->first_child->first_child->type == AST_ID
+         && tree->first_child->next->next->next->type == AST_LIST
+         && tree->first_child->next->next->next->list_type == LIST_STAT
+         && tree->first_child->next->next->next->first_child->type == AST_STAT
+         && tree->first_child->next->next->next->first_child->first_child->type == AST_ASSIGN
+         && tree->first_child->next->next->next->first_child->first_child->first_child->type == AST_TABLE
+         && tree->first_child->next->next->next->first_child->first_child->first_child->first_child->type == AST_ID
+         && tree->first_child->next->next->next->first_child->first_child->first_child->first_child->next->type == AST_DIM
+         && tree->first_child->next->next->next->first_child->first_child->first_child->first_child->next->first_child->type == AST_ID
+         && tree->first_child->next->next->next->first_child->first_child->first_child->next->type == AST_ADD
+         && tree->first_child->next->next->next->first_child->first_child->first_child->next->first_child->type == AST_MUL
+         && tree->first_child->next->next->next->first_child->first_child->first_child->next->first_child->first_child->type == AST_ID
+         && tree->first_child->next->next->next->first_child->first_child->first_child->next->first_child->first_child->next->type == AST_TABLE
+         && tree->first_child->next->next->next->first_child->first_child->first_child->next->first_child->first_child->next->first_child->type == AST_ID
+         && tree->first_child->next->next->next->first_child->first_child->first_child->next->first_child->first_child->next->first_child->next->type == AST_DIM
+         && tree->first_child->next->next->next->first_child->first_child->first_child->next->first_child->first_child->next->first_child->next->first_child->type == AST_ID
+         && tree->first_child->next->next->next->first_child->first_child->first_child->next->first_child->next->type == AST_TABLE
+         && tree->first_child->next->next->next->first_child->first_child->first_child->next->first_child->next->first_child->type == AST_ID
+         && tree->first_child->next->next->next->first_child->first_child->first_child->next->first_child->next->first_child->next->type == AST_DIM
+         && tree->first_child->next->next->next->first_child->first_child->first_child->next->first_child->next->first_child->next->first_child->type == AST_ID
+        ) {
+            delete_children(tree);
+            tree->type = AST_ID;
+            tree->id = malloc(128);
+            strcpy(tree->id, "weeeesh");
+        }
+    }
+    else {
         ast ptr = tree->first_child;
         while(ptr != NULL)
         {
