@@ -354,6 +354,9 @@ void print_node(ast node) {
         case AST_FUNC:
             printf("FUNCTION \n");
             break;
+        case AST_CALL:
+            printf("CALL : %s\n", node->id);
+            break;
         default:
             printf("UNDEFINED %d\n", node->type);
             break;
@@ -625,6 +628,11 @@ void print_code(ast tree, int indent)
                 printf(" ) ");
             }
             break;
+        case AST_CALL:
+            printf("%s(", tree->id);
+            print_code(tree->first_child, 0);
+            printf(")");
+            break;
         default:
             printf("ERROR");
     }
@@ -755,16 +763,26 @@ void replace(ast tree)
          && tree->first_child->next->first_child->next->first_child->next->type == AST_ID
         )
         {
-            ast arg1 = new_id(strdup(tree->first_child->id));
+            ast arg_list = new_list(LIST_ARG);
+            char * arg1_name = malloc(128);
+            arg1_name[0] = '&';
+            arg1_name[1] = '\0';
+            ast arg1 = new_id(strcat(arg1_name, tree->first_child->id));
             ast arg2 = new_id(strdup(tree->first_child->next->first_child->id));
             ast arg3 = new_id(strdup(tree->first_child->next->first_child->next->first_child->id));
             ast arg4 = new_id(strdup(tree->first_child->next->first_child->next->first_child->next->id));
+            
             delete_children(tree);
-            tree->type = AST_FUNC;
-            add_child_node(tree, arg1);
-            add_child_node(tree, arg2);
-            add_child_node(tree, arg3);
-            add_child_node(tree, arg4);
+            
+            add_child_node(arg_list, arg1);
+            add_child_node(arg_list, arg2);
+            add_child_node(arg_list, arg3);
+            add_child_node(arg_list, arg4);
+
+            tree->type = AST_CALL;
+            tree->id = malloc(256);
+            strcpy(tree->id, "mulac");
+            add_child_node(tree, arg_list);
         }
     } else {
         ast ptr = tree->first_child;
