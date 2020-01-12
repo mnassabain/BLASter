@@ -66,7 +66,7 @@ int main (int argc, char** argv) {
     }
     zzin = spec;
 
-    // zzparse();
+    zzparse();
 
     // print_ast(specTree);
     // print_code(specTree, 0);
@@ -74,15 +74,15 @@ int main (int argc, char** argv) {
     ////////////////////////////////////////////////////////////////////////////
     /// TESTING COMPARAISON
     
-    ast code = arbre->first_child->first_child->next->next->first_child;
-    print_ast(code);
-    ast func = specTree->first_child->first_child->next->next->first_child->first_child;
-    print_ast(func);
-    if (compare_real(code, func) == 1) {
-        printf("SUCCESS\n");
-    } else {
-        printf("FAILED\n");
-    }
+    // ast code = arbre->first_child->first_child->next->next->first_child;
+    // print_ast(code);
+    // ast func = specTree->first_child->first_child->next->next->first_child->first_child;
+    // print_ast(func);
+    // if (compare_real(code, func) == 1) {
+    //     printf("SUCCESS\n");
+    // } else {
+    //     printf("FAILED\n");
+    // }
     ////////////////////////////////////////////////////////////////////////////
 
 
