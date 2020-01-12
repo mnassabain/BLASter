@@ -50,6 +50,10 @@ int main (int argc, char** argv) {
     // print_ast(arbre);
     print_code(arbre, 0);
 
+    replace(arbre);
+
+    print_code(arbre, 0);
+
     ////////////////////////////////////////////////////////////////////////////
 
 
@@ -62,10 +66,10 @@ int main (int argc, char** argv) {
     }
     zzin = spec;
 
-    zzparse();
+    // zzparse();
 
     // print_ast(specTree);
-    print_code(specTree, 0);
+    // print_code(specTree, 0);
     
     
     // Clean

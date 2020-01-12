@@ -1,5 +1,6 @@
 #include "../include/ast.h"
 
+extern FILE* output_d;
 
 ast new_node(ast_type type) {
     ast new_node = (ast)malloc(sizeof(struct node));
@@ -112,9 +113,9 @@ void print_ast_aux(ast tree, int depth)
     int i;
     for(i = 0; i < depth; i++)
     {
-        printf("    ");
+        fprintf(output_d, "    ");
     }
-    // printf("%s\n", tree->name);
+    // fprintf(output_d, "%s\n", tree->name);
     print_node(tree);
 
     ast ptr = tree->first_child;
@@ -132,7 +133,7 @@ void print_ast(ast tree)
         return;
     }
 
-    // printf("%s\n", tree->name);
+    // fprintf(output_d, "%s\n", tree->name);
     print_node(tree);
 
     ast ptr = tree->first_child;
@@ -253,112 +254,112 @@ void print_node(ast node) {
 
     switch (node->type) {
         case AST_ID:
-            printf("ID (%s)\n", node->id);
+            fprintf(output_d, "ID (%s)\n", node->id);
             break;  
         case AST_INT:
-            printf("TYPE INT\n");
+            fprintf(output_d, "TYPE INT\n");
             break;
         case AST_DOUBLE:
-            printf("TYPE DOUBLE\n");
+            fprintf(output_d, "TYPE DOUBLE\n");
             break;
         case AST_VOID:
-            printf("TYPE VOID \n");
+            fprintf(output_d, "TYPE VOID \n");
             break;
         case AST_INT_VAL:
-            printf("INT (%d)\n", node->int_val);
+            fprintf(output_d, "INT (%d)\n", node->int_val);
             break;
         case AST_DOUBLE_VAL:
-            printf("DOUBLE (%f)\n", node->double_val);
+            fprintf(output_d, "DOUBLE (%f)\n", node->double_val);
             break;
         case AST_ADD:
-            printf("OPERATOR (+)\n");
+            fprintf(output_d, "OPERATOR (+)\n");
             break;
         case AST_MUL:
-            printf("OPERATOR (*)\n");
+            fprintf(output_d, "OPERATOR (*)\n");
             break;
         case AST_DIV:
-            printf("OPERATOR (/)\n");
+            fprintf(output_d, "OPERATOR (/)\n");
             break;
         case AST_MINUS:
-            printf("BINARY (-)\n");
+            fprintf(output_d, "BINARY (-)\n");
             break;
         case AST_UMINUS:
-            printf("UNARY (-)\n");
+            fprintf(output_d, "UNARY (-)\n");
             break;
         case AST_ASSIGN:
-            printf("ASSIGN\n");
+            fprintf(output_d, "ASSIGN\n");
             break;
         case AST_WHILE:
-            printf("WHILE\n");
+            fprintf(output_d, "WHILE\n");
             break;
         case AST_IF:
-            printf("IF\n");
+            fprintf(output_d, "IF\n");
             break;
         case AST_MAIN:
-            printf("MAIN\n");
+            fprintf(output_d, "MAIN\n");
             break;
         case AST_INC:
-            printf("++\n");
+            fprintf(output_d, "++\n");
             break;
         case AST_DEC:
-            printf("--\n");
+            fprintf(output_d, "--\n");
             break;
         case AST_RETURN:
-            printf("RETURN\n");
+            fprintf(output_d, "RETURN\n");
             break;
         case AST_FOR:
-            printf("FOR\n");
+            fprintf(output_d, "FOR\n");
             break;
         case AST_AND_OP:
-            printf("OPERATOR (&&)\n");
+            fprintf(output_d, "OPERATOR (&&)\n");
             break;
         case AST_OR_OP:
-            printf("OPERATOR (||)\n");
+            fprintf(output_d, "OPERATOR (||)\n");
             break;
         case AST_GEQ_OP:
-            printf("OPERATOR (>=)\n");
+            fprintf(output_d, "OPERATOR (>=)\n");
             break;
         case AST_LEQ_OP:
-            printf("OPERATOR (<=)\n");
+            fprintf(output_d, "OPERATOR (<=)\n");
             break;
         case AST_GT_OP:
-            printf("OPERATOR (>)\n");
+            fprintf(output_d, "OPERATOR (>)\n");
             break;
         case AST_LT_OP:
-            printf("OPERATOR (<)\n");
+            fprintf(output_d, "OPERATOR (<)\n");
             break;
         case AST_NEQ_OP:
-            printf("OPERATOR (!=)\n");
+            fprintf(output_d, "OPERATOR (!=)\n");
             break;
         case AST_EQ_OP:
-            printf("OPERATOR (==)\n");
+            fprintf(output_d, "OPERATOR (==)\n");
             break;
         case AST_STAT:
-            printf("STATEMENT\n");
+            fprintf(output_d, "STATEMENT\n");
             break;
         case AST_TABLE:
-            printf("TABLE\n");
+            fprintf(output_d, "TABLE\n");
             break;
         case AST_DIM:
-            printf("DIMENSIONS\n");
+            fprintf(output_d, "DIMENSIONS\n");
             break;
         case AST_ARRAY:
-            printf("ARRAY\n");
+            fprintf(output_d, "ARRAY\n");
             break;
         case AST_PRINTF:
-            printf("PRINTF : %s \n", node->printf);
+            fprintf(output_d, "PRINTF : %s \n", node->printf);
             break;
         case AST_LIST:
             print_list(node->list_type);
             break;
         case AST_FUNC:
-            printf("FUNCTION \n");
+            fprintf(output_d, "FUNCTION \n");
             break;
         case AST_CALL:
-            printf("CALL : %s\n", node->id);
+            fprintf(output_d, "CALL : %s\n", node->id);
             break;
         default:
-            printf("UNDEFINED %d\n", node->type);
+            fprintf(output_d, "UNDEFINED %d\n", node->type);
             break;
     }
 }
@@ -368,7 +369,7 @@ void indent_code(int indent) {
     int i;
     for(i = 0; i < indent; i++)
     {
-        printf("    ");
+        fprintf(output_d, "    ");
     }
 }
 
@@ -383,15 +384,15 @@ void print_code(ast tree, int indent)
 
     switch (tree->type) {
         case AST_MAIN:
-            printf("int main() {\n");
+            fprintf(output_d, "int main() {\n");
             print_code(tree->first_child, indent+1);
-            printf("}\n");
+            fprintf(output_d, "}\n");
             break;
         case AST_STAT:
             indent_code(indent);
             print_code(tree->first_child, indent);
             if (tree->first_child->type != AST_PRINTF )
-                printf(";\n");
+                fprintf(output_d, ";\n");
             break;
         case AST_LIST:
             // afficher tous les fils de la liste
@@ -404,160 +405,160 @@ void print_code(ast tree, int indent)
                     // TODO : RAJOUTER IF POUR SWITCH SEPARATEUR EN FONCTION DU TYPE 
                     // DE LA LISTE
                     if (tree->list_type != LIST_STAT && tree->list_type != LIST_FUNC)
-                        printf(", ");
+                        fprintf(output_d, ", ");
                     print_code(ptr, indent);
                 }
             }
             break;
         case AST_INT:
-            printf("int ");
+            fprintf(output_d, "int ");
             print_code(tree->first_child, indent);
             ptr = tree->first_child;
             while(ptr->next != NULL)
             {
                 ptr = ptr->next;
-                printf(", ");
+                fprintf(output_d, ", ");
                 print_code(ptr, indent);
             }
             break;
         case AST_DOUBLE:
-            printf("double ");
+            fprintf(output_d, "double ");
             print_code(tree->first_child, indent);
             ptr = tree->first_child;
             while(ptr->next != NULL)
             {
                 ptr = ptr->next;
-                printf(", ");
+                fprintf(output_d, ", ");
                 print_code(ptr, indent);
             }
             break;
         case AST_VOID:
-            printf("void ");
+            fprintf(output_d, "void ");
             print_code(tree->first_child, indent);
             ptr = tree->first_child;
             while(ptr->next != NULL)
             {
                 ptr = ptr->next;
-                printf(", ");
+                fprintf(output_d, ", ");
                 print_code(ptr, indent);
             }
             break;
         case AST_INT_VAL:
-            printf("%d", tree->int_val);
+            fprintf(output_d, "%d", tree->int_val);
             break;
         case AST_DOUBLE_VAL:
-            printf("%f", tree->double_val);
+            fprintf(output_d, "%f", tree->double_val);
             break;
         case AST_ASSIGN:
             print_code(tree->first_child, 0);
-            printf(" = ");
+            fprintf(output_d, " = ");
             print_code(tree->first_child->next, 0);
             break;
         case AST_ADD:
         // Avant modif : pourquoi modif ?
-            printf("(");
+            fprintf(output_d, "(");
             print_code(tree->first_child, 0);
-            printf(" + ");
+            fprintf(output_d, " + ");
             print_code(tree->first_child->next, 0);
-            printf(")");
+            fprintf(output_d, ")");
             break;
         case AST_MUL:
             print_code(tree->first_child, 0);
-            printf(" * ");
+            fprintf(output_d, " * ");
             print_code(tree->first_child->next, 0);
             break;
         case AST_DIV:
             print_code(tree->first_child, 0);
-            printf(" / ");
+            fprintf(output_d, " / ");
             print_code(tree->first_child->next, 0);
             break;
         case AST_MINUS:
-            printf("(");
+            fprintf(output_d, "(");
             print_code(tree->first_child, 0);
-            printf(" - ");
+            fprintf(output_d, " - ");
             print_code(tree->first_child->next, 0);
-            printf(")");
+            fprintf(output_d, ")");
             break;
         case AST_AND_OP:
-            printf("(");
+            fprintf(output_d, "(");
             print_code(tree->first_child, 0);
-            printf(" && ");
+            fprintf(output_d, " && ");
             print_code(tree->first_child->next, 0);
-            printf(")");
+            fprintf(output_d, ")");
             break;
         case AST_OR_OP:
-            printf("(");
+            fprintf(output_d, "(");
             print_code(tree->first_child, 0);
-            printf(" || ");
+            fprintf(output_d, " || ");
             print_code(tree->first_child->next, 0);
-            printf(")");
+            fprintf(output_d, ")");
             break;
         case AST_GEQ_OP:
             print_code(tree->first_child, 0);
-            printf(" >= ");
+            fprintf(output_d, " >= ");
             print_code(tree->first_child->next, 0);
             break;
         case AST_LEQ_OP:
             print_code(tree->first_child, 0);
-            printf(" <= ");
+            fprintf(output_d, " <= ");
             print_code(tree->first_child->next, 0);
             break;
         case AST_GT_OP:
             print_code(tree->first_child, 0);
-            printf(" > ");
+            fprintf(output_d, " > ");
             print_code(tree->first_child->next, 0);
             break;
         case AST_LT_OP:
             print_code(tree->first_child, 0);
-            printf(" < ");
+            fprintf(output_d, " < ");
             print_code(tree->first_child->next, 0);
             break;
         case AST_NEQ_OP:
             print_code(tree->first_child, 0);
-            printf(" != ");
+            fprintf(output_d, " != ");
             print_code(tree->first_child->next, 0);
             break;
         case AST_EQ_OP:
             print_code(tree->first_child, 0);
-            printf(" == ");
+            fprintf(output_d, " == ");
             print_code(tree->first_child->next, 0);
             break;
         case AST_IF:
-            printf("if ( ");                            // if
+            fprintf(output_d, "if ( ");                            // if
             print_code(tree->first_child, indent);      // condition
-            printf(" ) {\n");                           
+            fprintf(output_d, " ) {\n");                           
             ast second_child = tree->first_child->next;
             print_code(second_child, indent+1);  // body
             if(second_child->next != NULL) {     // else body
                 indent_code(indent);
-                printf("} else {\n");
+                fprintf(output_d, "} else {\n");
                 print_code(tree->first_child->next->next, indent+1);
             }
             indent_code(indent);
-            printf("}");
+            fprintf(output_d, "}");
             break;
         case AST_WHILE:
-            printf("while ( ");
+            fprintf(output_d, "while ( ");
             print_code(tree->first_child, 0);
-            printf(" ) {\n");
+            fprintf(output_d, " ) {\n");
             print_code(tree->first_child->next, indent+1);
             indent_code(indent);
-            printf("}");
+            fprintf(output_d, "}");
             break;
         case AST_FOR:
-            printf("for ( ");
+            fprintf(output_d, "for ( ");
             print_code(tree->first_child, 0);
-            printf("; ");
+            fprintf(output_d, "; ");
             ast condition = tree->first_child->next;
             print_code(condition, 0);
-            printf("; ");
+            fprintf(output_d, "; ");
             ast update = condition->next;
             print_code(update, 0);
-            printf(" ) {\n");
+            fprintf(output_d, " ) {\n");
             ast body = update->next;
             print_code(body, indent+1);
             indent_code(indent);
-            printf("}");
+            fprintf(output_d, "}");
             break;
         case AST_TABLE:
             print_code(tree->first_child, 0);       // table ID
@@ -565,76 +566,76 @@ void print_code(ast tree, int indent)
             break;
         case AST_DIM:
             // print all dimensions
-            printf("[");
+            fprintf(output_d, "[");
             print_code(tree->first_child, indent);
-            printf("]");
+            fprintf(output_d, "]");
             ast ptr = tree->first_child;
             while(ptr->next != NULL)
             {
                 ptr = ptr->next;
-                printf("[");
+                fprintf(output_d, "[");
                 print_code(ptr, indent);
-                printf("]");
+                fprintf(output_d, "]");
             }
             break;
         case AST_INC:
             print_code(tree->first_child, 0);
-            printf("++");
+            fprintf(output_d, "++");
             break;
         case AST_DEC:
             print_code(tree->first_child, 0);
-            printf("--");
+            fprintf(output_d, "--");
             break;
         case AST_ID:
-            printf("%s", tree->id);
+            fprintf(output_d, "%s", tree->id);
             break;  
         case AST_PRINTF:
-            printf("%s\n", tree->printf);
+            fprintf(output_d, "%s\n", tree->printf);
             break;
         case AST_UMINUS:
-            printf("-");
+            fprintf(output_d, "-");
             print_code(tree->first_child, 0);
             break;
         case AST_RETURN:
-            printf("return ");
+            fprintf(output_d, "return ");
             print_code(tree->first_child, 0);
             break;
         case AST_ARRAY:
-            printf(" { ");
+            fprintf(output_d, " { ");
             print_code(tree->first_child, indent);
             ptr = tree->first_child;
             while(ptr->next != NULL)
             {   
                 ptr = ptr->next;
                 if (ptr->type == AST_INT_VAL) {
-                    printf(", ");
+                    fprintf(output_d, ", ");
                 }
                 print_code(ptr, indent);
             }
-            printf(" } ");
+            fprintf(output_d, " } ");
             break;
         case AST_FUNC:
             if (count_child(tree) == 3) { // définition de fonction
                 print_code(tree->first_child, 0);
-                printf(" ( ");
+                fprintf(output_d, " ( ");
                 print_code(tree->first_child->next, 0);
-                printf(" ) {\n");
+                fprintf(output_d, " ) {\n");
                 print_code(tree->first_child->next->next, indent+1);
-                printf("}\n");
+                fprintf(output_d, "}\n");
             } else { // utilisation de fonction
                 print_code(tree->first_child, 0); // nom
-                printf(" ( ");
+                fprintf(output_d, " ( ");
                 print_code(tree->first_child->next, 0); // paramètres
-                printf(" ) ");
+                fprintf(output_d, " ) ");
             }
             break;
         case AST_CALL:
-            printf("%s(", tree->id);
+            fprintf(output_d, "%s(", tree->id);
             print_code(tree->first_child, 0);
-            printf(")");
+            fprintf(output_d, ")");
             break;
         default:
-            printf("ERROR");
+            fprintf(output_d, "ERROR");
     }
 
     return;
@@ -664,30 +665,30 @@ int count_child(ast node) {
 }
 
 void print_list(list_type list) {
-    printf("LIST ");
+    fprintf(output_d, "LIST ");
     switch (list) {
         case LIST_COND:
-            printf("( CONDITIONS )");
+            fprintf(output_d, "( CONDITIONS )");
             break;
         case LIST_STAT:
-            printf("( STATEMENTS )");
+            fprintf(output_d, "( STATEMENTS )");
             break;
         case LIST_INIT:
-            printf("( INITIALISATIONS )");
+            fprintf(output_d, "( INITIALISATIONS )");
             break;
         case LIST_UPDATE:
-            printf("( UPDATES )");
+            fprintf(output_d, "( UPDATES )");
             break;
         case LIST_FUNC:
-            printf("( FUNCTIONS )");
+            fprintf(output_d, "( FUNCTIONS )");
             break;
         case LIST_ARG:
-            printf("( ARGS )");
+            fprintf(output_d, "( ARGS )");
             break;
         default:
-            printf("UNDEFINED");
+            fprintf(output_d, "UNDEFINED");
     }
-    printf("\n");
+    fprintf(output_d, "\n");
 }
 
 void swap_nodes(node* n1, node* n2) {
@@ -823,10 +824,10 @@ void replace(ast tree)
          && tree->first_child->next->next->next->first_child->first_child->first_child->next->first_child->next->first_child->next->type == AST_DIM
          && tree->first_child->next->next->next->first_child->first_child->first_child->next->first_child->next->first_child->next->first_child->type == AST_ID
         ) {
-            delete_children(tree);
             tree->type = AST_ID;
             tree->id = malloc(128);
-            strcpy(tree->id, "weeeesh");
+            strcpy(tree->id, "axpy(...)");
+            delete_children(tree);
         }
     }
     else {
