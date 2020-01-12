@@ -6,6 +6,7 @@ ast new_node(ast_type type) {
     new_node->type = type;
     new_node->first_child = NULL;
     new_node->next = NULL;
+    new_node->prev = NULL;
 
     return new_node;
 }
@@ -16,6 +17,7 @@ ast new_int(int val) {
     new_node->int_val = val;
     new_node->first_child = NULL;
     new_node->next = NULL;
+    new_node->prev = NULL;
 
     return new_node;
 }
@@ -26,6 +28,7 @@ ast new_double(double val) {
     new_node->double_val = val;
     new_node->first_child = NULL;
     new_node->next = NULL;
+    new_node->prev = NULL;
 
     return new_node;
 }
@@ -36,6 +39,7 @@ ast new_id(char* id) {
     new_node->id = id; /// NEEDS TO BE FREED, COMES FROM STRDUP
     new_node->first_child = NULL;
     new_node->next = NULL;
+    new_node->prev = NULL;
 
     return new_node;
 }
@@ -46,6 +50,7 @@ ast new_printf(char* printf) {
     new_node->printf = printf; /// NEEDS TO BE FREED, COMES FROM STRDUP
     new_node->first_child = NULL;
     new_node->next = NULL;
+    new_node->prev = NULL;
 
     return new_node;
 }
@@ -56,6 +61,7 @@ ast new_list(list_type list_type) {
     new_node->list_type = list_type;
     new_node->first_child = NULL;
     new_node->next = NULL;
+    new_node->prev = NULL;
 
     return new_node;
 }
@@ -200,17 +206,20 @@ ast add_child_node(node* n, node* child)
     if (n->first_child == NULL)
     {
         n->first_child = child;
+        child->parent = n;
         return n;
     }
 
     ast ptr = n->first_child;
     while(ptr->next != NULL)
     {
+        printf("seeing next\n");
         ptr = ptr->next;
     }
 
     ptr->next = child;
-
+    child->prev = ptr;
+    printf("child added\n");
     return n;
 }
 
@@ -232,6 +241,8 @@ ast add_brother_node(node* n, node* brother) {
     }
 
     ptr->next = brother;
+    brother->parent = NULL;
+    brother->prev = ptr;
 
     return n;
 }
@@ -280,9 +291,6 @@ void print_node(ast node) {
             break;
         case AST_IF:
             printf("IF\n");
-            break;
-        case AST_ELSE:
-            printf("ELSE\n");
             break;
         case AST_MAIN:
             printf("MAIN\n");
@@ -354,115 +362,6 @@ void indent_code(int indent) {
     {
         printf("    ");
     }
-}
-
-
-/**
- * @brief Fonction auxiliaire utilisée par print_code
- * 
- * @param node noeud à afficher en code
- */
-void print_code_node(ast node)
-{
-    if (node == NULL)
-        return;
-
-    switch (node->type) {
-        case AST_ID:
-            printf("%s", node->id);
-            break;  
-        case AST_INT:
-            printf("int ");
-            break;
-        case AST_DOUBLE:
-            printf("double ");
-            break;
-        case AST_INT_VAL:
-            printf("%d", node->int_val);
-            break;
-        case AST_DOUBLE_VAL:
-            printf("%f", node->double_val);
-            break;
-        case AST_ADD:
-            printf("+");
-            break;
-        case AST_MUL:
-            printf("*");
-            break;
-        case AST_DIV:
-            printf("/");
-            break;
-        case AST_MINUS:
-            printf("-");
-            break;
-        case AST_UMINUS:
-            printf("-");
-            break;
-        case AST_ASSIGN:
-            // printf("=");
-            break;
-        case AST_WHILE:
-            printf("while");
-            break;
-        case AST_ELSE:
-            printf("else");
-            break;
-        case AST_INC:
-            printf("++");
-            break;
-        case AST_DEC:
-            printf("--");
-            break;
-        case AST_RETURN:
-            printf("return");
-            break;
-        case AST_FOR:
-            printf("for");
-            break;
-        case AST_AND_OP:
-            printf("&&");
-            break;
-        case AST_OR_OP:
-            printf("||");
-            break;
-        case AST_GEQ_OP:
-            printf(">=");
-            break;
-        case AST_LEQ_OP:
-            printf("<=");
-            break;
-        case AST_GT_OP:
-            printf(">");
-            break;
-        case AST_LT_OP:
-            printf("<");
-            break;
-        case AST_NEQ_OP:
-            printf("!=");
-            break;
-        case AST_EQ_OP:
-            printf("==");
-            break;
-        case AST_TABLE:
-            // printf("TABLE");
-            break;
-        case AST_DIM:
-            // printf("DIMENSIONS");
-            break;
-        case AST_ARRAY:
-            // printf("ARRAY");
-            break;
-        case AST_PRINTF:
-            printf("%s\n", node->printf);
-            break;
-        case AST_LIST:
-            // printf();
-            break;
-        default:
-            printf("UNDEFINED %d", node->type);
-            break;
-    }
-    // printf("\n");
 }
 
 
@@ -696,7 +595,6 @@ void print_code(ast tree, int indent)
             printf(" } ");
             break;
         default:
-            print_code_node(tree);
             printf("ERROR");
     }
 
@@ -745,4 +643,59 @@ void print_list(list_type list) {
             printf("UNDEFINED");
     }
     printf("\n");
+}
+
+void swap_nodes(node* n1, node* n2) {
+    node *parent = NULL;
+    node *tmp_next;
+    node *tmp_prev;
+
+    if (n1 == NULL || n2 == NULL)
+        return;
+
+    // si n1 est le premier fils
+    if (n1->parent != NULL) {
+        parent = n1->parent;
+        parent->first_child = n2; // n2 devient le premier fils
+    }
+
+    // si n2 est le premier fils
+    if (n2->parent != NULL) {
+        parent = n2->parent;
+        parent->first_child = n1; // n1 devient le premier fils
+    }
+
+    if (n1->next == n2) { // si consécutifs
+        n1->next = n2->next;
+        n2->prev = n1->prev;
+
+        if (n1->next != NULL)
+            n1->next->prev = n1;
+
+        if (n2->prev != NULL)
+            n2->prev->next = n2;
+
+
+        n2->next = n1;
+        n1->prev = n2;
+    } else {
+        if (n1->next != NULL)
+            n1->next->prev = n2;
+        if (n1->prev != NULL)
+            n1->prev->next = n2;
+
+        if (n2->next != NULL)
+            n2->next->prev = n1;
+        if (n2->prev != NULL)
+            n2->prev->next = n1;
+
+        tmp_next = n2->next;
+        tmp_prev = n2->prev;
+
+        n2->prev = n1->prev;
+        n2->next = n1->next;
+
+        n1->prev = tmp_prev;
+        n1->next = tmp_next;
+    }
 }
