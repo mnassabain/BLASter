@@ -122,6 +122,14 @@ void print_ast(ast tree);
 ast delete_node(ast node);
 
 /**
+ * @brief Effacer tous les fils d'un noeud
+ * 
+ * @param node noeud dont les fils on veut effacer
+ * @return ast noeud passé en argument
+ */
+ast delete_children(ast node);
+
+/**
  * @brief Générer un code source à partir d'un AST
  * 
  * @param tree AST à transformer en code

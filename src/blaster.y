@@ -455,7 +455,7 @@ int main() {
     print_ast(arbre);
 
     // Clean
-    free_ast(arbre);
+    delete_node(arbre);
     lex_free();
     fclose(f);
 

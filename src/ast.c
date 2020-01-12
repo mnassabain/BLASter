@@ -162,6 +162,24 @@ ast delete_node(ast node)
     return NULL;
 }
 
+ast delete_children(ast node)
+{
+    if (node == NULL)
+    {
+        return node;
+    }
+
+    ast ptr = node->first_child;
+    while(ptr != NULL)
+    {
+        ast next = ptr->next;
+        delete_node(ptr);
+        ptr = next;
+    }
+
+    return node;
+}
+
 ast add_child_node(node* n, node* child)
 {
     if (n == NULL)
