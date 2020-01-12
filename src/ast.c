@@ -536,10 +536,12 @@ void print_code(ast tree, int indent)
             print_code(tree->first_child->next, 0);
             break;
         case AST_ADD:
+        // Avant modif : pourquoi modif ?
+            printf("(");
             print_code(tree->first_child, 0);
-            printf(" + ( ");
+            printf(" + ");
             print_code(tree->first_child->next, 0);
-            printf(" )");
+            printf(")");
             break;
         case AST_MUL:
             print_code(tree->first_child, 0);
@@ -552,9 +554,11 @@ void print_code(ast tree, int indent)
             print_code(tree->first_child->next, 0);
             break;
         case AST_MINUS:
+            printf("(");
             print_code(tree->first_child, 0);
             printf(" - ");
             print_code(tree->first_child->next, 0);
+            printf(")");
             break;
         case AST_AND_OP:
             printf("(");
