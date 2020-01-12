@@ -5,6 +5,8 @@
 #include "specParser.h"
 
 int DEBUG_LEX = 0;
+int opt_print_ast = 0;
+int opt_print_symbol_table = 0;
 
 extern FILE* yyin;
 extern FILE* zzin;
@@ -47,7 +49,7 @@ int main (int argc, char** argv) {
     // Affichage de l'arbre 
     // print_ast(arbre);
     print_code(arbre, 0);
-    
+
     ////////////////////////////////////////////////////////////////////////////
 
 
@@ -108,10 +110,12 @@ int options (int argc, char** argv) {
                 printf(" * NASSABAIN Marco\n");
                 break;
             case 't':
-                printf("option tos\n");
+                // printf("option tos\n");
+                opt_print_symbol_table = 1;
                 break;
             case 'a':
-                printf("option ast\n");
+                // printf("option ast\n");
+                opt_print_ast = 1;
                 break;
             case 'o':
                 printf("option output with arg: %s\n", optarg);
