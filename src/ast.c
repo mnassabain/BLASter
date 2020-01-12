@@ -678,7 +678,18 @@ void print_code(ast tree, int indent)
             print_code(tree->first_child, 0);
             break;
         case AST_ARRAY:
-
+            printf(" { ");
+            print_code(tree->first_child, indent);
+            ptr = tree->first_child;
+            while(ptr->next != NULL)
+            {   
+                ptr = ptr->next;
+                if (ptr->type == AST_INT_VAL) {
+                    printf(", ");
+                }
+                print_code(ptr, indent);
+            }
+            printf(" } ");
             break;
         default:
             print_code_node(tree);
