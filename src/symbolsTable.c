@@ -13,6 +13,7 @@ symbolTable create_symbolt(void)
 
 	// Initialisation 
 	st->nb_var = 0;
+	st->nb_scope = 0;
 	// Au départ, table des symboles vide 
 	st->symbol_table = NULL;
 
@@ -38,11 +39,13 @@ void free_symbolt(symbolTable st)
 	}
 	st->higher_scope = NULL;
 
+	free(st->lower_scope);
+
 	free(st);
 }
 
 // Affichage de la table des symboles 
-// ? Doit-on afficher ts les scopes 
+// TODO rendre l'affichage plus beau
 void display_symbolt(symbolTable st)
 {
 	if (st != NULL)
@@ -77,6 +80,17 @@ void display_symbolt(symbolTable st)
 			printf("\n");
 		}
 		
+		printf("****** Affichage des %d scopes inférieurs ******\n", st->nb_scope);
+		// On affiche les scopes inférieurs
+		for (int i = 0; i < st->nb_scope; i++)
+		{
+			display_symbolt(st->lower_scope[i]);
+		}
+		
+	}
+	else 
+	{
+		fprintf(stderr, "display_st: erreur st null\n");
 	}
 }
 
@@ -106,7 +120,8 @@ symbol* insert_symbol_int(symbolTable st, char* name, int value,
 	else
 	{
 		// On doit realloc
-		st->symbol_table = realloc(st->symbol_table, st->nb_var + 1 * sizeof(struct sy));
+		st->symbol_table = realloc(st->symbol_table, 
+									(st->nb_var + 1) * sizeof(struct sy));
 	}
 
 	if (is_constant == false)
@@ -174,7 +189,8 @@ symbol* insert_symbol_double(symbolTable st, char* name, double value,
 	else
 	{
 		// On doit realloc
-		st->symbol_table = realloc(st->symbol_table, st->nb_var + 1 * sizeof(struct sy));
+		st->symbol_table = realloc(st->symbol_table, 
+									(st->nb_var + 1) * sizeof(struct sy));
 	}
 
 	if (is_constant == false)
@@ -232,4 +248,52 @@ symbol* lookup(symbolTable st, char* name)
 		}
 	}
 	return NULL;
+}
+
+void add_higher_scope(symbolTable st_higher, symbolTable st_lower)
+{
+	if ((st_higher == NULL) || (st_lower == NULL))
+	{
+		fprintf(stderr, "add_lower_scope, erreur: une des tables des symboles " 
+				"est NULL\n");
+		exit(EXIT_FAILURE);
+	}
+
+	if (st_higher == st_lower)
+	{
+		fprintf(stderr, "add_lower_scope, erreur: tables des symboles " 
+				"identiques\n");
+		exit(EXIT_FAILURE);
+	}
+
+	// On augmente le nombre de scope
+
+	if(!st_higher->nb_scope)
+	{
+		// pas de scope avant
+		st_higher->lower_scope = calloc(1, sizeof(symbolTable*));
+		
+		if (st_higher->lower_scope == NULL)
+		{
+			perror("add_higher_scope, calloc: ");
+			exit(EXIT_FAILURE);
+		}
+	}
+	else
+	{
+		// Ajout d'un nouveau scope aux autres
+		st_higher->lower_scope = realloc(st_higher->lower_scope, 
+							sizeof(symbolTable*) * (st_higher->nb_scope + 1));
+
+		if (st_higher->lower_scope == NULL)
+		{
+			perror("add_higher_scope, realloc: ");
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	st_higher->lower_scope[st_higher->nb_scope] = st_lower;
+	st_lower->higher_scope = st_higher;
+	
+	st_higher->nb_scope++;
 }

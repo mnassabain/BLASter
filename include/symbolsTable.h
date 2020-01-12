@@ -56,17 +56,25 @@ typedef struct st
 {
 	// Nombre de variables
 	int nb_var;
+
+	// Nombre de scope inférieurs présents
+	int nb_scope;
+
 	// Les valeurs 
 	symbol* symbol_table;
-	// increment pour nom des variables temporaires 
-	// TODO : a supprimer 
-	int incr;
 
 	/**
 	 * Pour les variables globales 
 	 * Exemple avec un int déclaré avant un for 
 	 */
 	struct st* higher_scope;
+
+	/**
+	 * Pour affichage de la table des symboles en entier
+	 * Tableau des tables des symboles de sous-scope.
+	 */
+	struct st** lower_scope;
+	
 
 } *symbolTable;
 
@@ -131,5 +139,14 @@ symbol* lookup(symbolTable st, char* name);
  * Remarque : lookup inutile dans le cas des cste, on ne va pas les appeler dans 
  * la suite du programme
  */
+
+/**
+ * @brief Ajoute un scope supérieur (st_higher) à st_lower. Référencement de 
+ * st_lower dans le tableau de sous scope de st_higher.
+ * 
+ * @param st_higher 
+ * @param st_lower 
+ */
+void add_higher_scope(symbolTable st_higer, symbolTable st_lower);
 
 #endif
