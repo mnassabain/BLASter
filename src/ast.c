@@ -882,3 +882,68 @@ int compare(ast tree1, ast tree2)
 
     return 1;
 }
+
+int compare_real(ast tree1, ast tree2)
+{
+    // printf("PRINTING ptr1\n");
+    // print_ast(tree1);
+    // printf("PRINTING ptr2\n");
+    // print_ast(tree2);
+    // printf("\n\n");
+    int return_val = 1;
+
+    if (tree1 == NULL)
+    {
+        return tree2 == NULL;
+    }
+
+    if (tree2 == NULL)
+    {
+        return tree1 == NULL;
+    }
+
+    if (tree1->type == AST_INT || tree1->type == AST_DOUBLE) {
+        tree1 = tree1->first_child;
+    }
+    if (tree2->type == AST_INT || tree2->type == AST_DOUBLE) {
+        tree2 = tree2->first_child;
+    }
+    // if (tree1->type == AST_ADD  || tree1->type == AST_ADD  || tree1->type == AST_DIV || tree1->type == AST_MUL) {
+        
+    // }
+    if (tree1->type == AST_ID && (tree2->type == AST_INT_VAL || tree2->type == AST_DOUBLE_VAL) ) {
+        return 1;
+    }
+    if (tree2->type == AST_ID && (tree1->type == AST_INT_VAL || tree1->type == AST_DOUBLE_VAL) ) {
+        return 1;
+    }
+    if (tree1->type == AST_LT_OP && tree2->type == AST_LT_OP)
+        return 1;
+    if (tree1->type == AST_GT_OP && tree2->type == AST_GT_OP)
+        return 1;
+
+    // après traitements
+    if (tree1->type != tree2->type) {
+        // printf("diff\n");
+        // print_ast(tree1);
+        // print_ast(tree2);
+        return 0;
+    }
+    // printf("equal nodes\n");
+
+    ast ptr1 = tree1->first_child;
+    ast ptr2 = tree2->first_child;
+    while(ptr1 != NULL && ptr2 != NULL)
+    {   
+        // compare childrens
+        // printf("here\n");
+        if ( compare_real(ptr1, ptr2) == 1) {
+            ptr1 = ptr1->next;
+            ptr2 = ptr2->next;
+        } else {
+            return 0;
+        }
+    }
+
+    return return_val;
+}

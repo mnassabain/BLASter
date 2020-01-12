@@ -48,7 +48,7 @@ int main (int argc, char** argv) {
 
     // Affichage de l'arbre 
     // print_ast(arbre);
-    print_code(arbre, 0);
+    // print_code(arbre, 0);
 
     replace(arbre);
 
@@ -71,7 +71,21 @@ int main (int argc, char** argv) {
     // print_ast(specTree);
     // print_code(specTree, 0);
     
+    ////////////////////////////////////////////////////////////////////////////
+    /// TESTING COMPARAISON
     
+    ast code = arbre->first_child->first_child->next->next->first_child;
+    print_ast(code);
+    ast func = specTree->first_child->first_child->next->next->first_child->first_child;
+    print_ast(func);
+    if (compare_real(code, func) == 1) {
+        printf("SUCCESS\n");
+    } else {
+        printf("FAILED\n");
+    }
+    ////////////////////////////////////////////////////////////////////////////
+
+
     // Clean
     delete_node(arbre);
     delete_node(specTree);

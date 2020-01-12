@@ -472,7 +472,7 @@ int main(int argc, char** argv) {
     ////////////////////////////////
 
     yyparse();
-
+    replace(arbre);
     // Affichage de l'arbre 
     print_ast(arbre);
 

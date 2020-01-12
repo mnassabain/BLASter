@@ -180,7 +180,7 @@ int count_child(ast node);
  * @return int 0 si tree1 != tree2, !=0 sinon
  */
 int compare(ast tree1, ast tree2);
-
+int compare_real(ast tree1, ast tree2);
 /**
  * @brief Fonction à appeler - remplace toutes les opérations par les appels fct
  * 
