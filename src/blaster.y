@@ -460,9 +460,9 @@ void yyerror (char *s) {
 int main() {
 
     ////////// parse a test file ///
-    // FILE* f = fopen ("test.c", "r");
+    FILE* f = fopen ("test.c", "r");
     // FILE* f = fopen ("simple.c", "r");
-    FILE* f = fopen ("exemple.c", "r");
+    // FILE* f = fopen ("exemple.c", "r");
     if (f == NULL) {
         fprintf(stderr, "Unable to open file");
         return 1;
