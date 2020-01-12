@@ -73,8 +73,11 @@ ast arbre;
 
 axiom:
     INT MAIN '(' ')' '{' statement_list '}'
-        {
-            add_child_node(arbre, $6);
+        {   
+            arbre = new_node(AST_MAIN);
+            ast list = new_node(AST_LIST);
+            add_child_node(list, $6);
+            add_child_node(arbre, list);
             printf("\nFOUND\n");
             return 0;
         }
@@ -437,8 +440,6 @@ void yyerror (char *s) {
 #ifndef TESTING
 int main() {
 
-    arbre = new_node(AST_MAIN);
-
     ////////// parse a test file ///
     FILE* f = fopen ("test.c", "r");
     // FILE* f = fopen ("simple.c", "r");
@@ -454,8 +455,9 @@ int main() {
     // Affichage de l'arbre 
     print_ast(arbre);
 
+    print_code(arbre, 0);
     // Clean
-    free_ast(arbre);
+    delete_node(arbre);
     lex_free();
     fclose(f);
 
