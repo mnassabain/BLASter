@@ -478,6 +478,7 @@ void print_code(ast tree, int indent)
         case AST_MAIN:
             printf("int main() {\n");
             print_code(tree->first_child, indent+1);
+            printf("}\n");
             break;
         case AST_STAT:
             indent_code(indent);

@@ -179,6 +179,17 @@ table:
             add_child_node($$, table);
             add_child_node($$, $4);
         }
+    | IDENTIFIER size_list ASSIGN expression
+        {
+            $$ = new_node(AST_ASSIGN);
+            ast table = new_node(AST_TABLE);
+            add_child_node(table, new_id($1));
+            ast dimensions = new_node(AST_DIM);
+            add_child_node(dimensions, $2);
+            add_child_node(table, dimensions);
+            add_child_node($$, table);
+            add_child_node($$, $4);
+        }
     ;
 
 size_list:
@@ -418,6 +429,14 @@ expression:
         {
             $$ = $1;
         }
+    | IDENTIFIER size_list
+        {
+            $$ = new_node(AST_TABLE);
+            add_child_node($$, new_id($1));
+            ast dimensions = new_node(AST_DIM);
+            add_child_node(dimensions, $2);
+            add_child_node($$, dimensions);
+        }
     ;
     
 constant:
@@ -441,8 +460,9 @@ void yyerror (char *s) {
 int main() {
 
     ////////// parse a test file ///
-    FILE* f = fopen ("test.c", "r");
+    // FILE* f = fopen ("test.c", "r");
     // FILE* f = fopen ("simple.c", "r");
+    FILE* f = fopen ("exemple.c", "r");
     if (f == NULL) {
         fprintf(stderr, "Unable to open file");
         return 1;
