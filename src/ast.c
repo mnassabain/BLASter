@@ -254,112 +254,112 @@ void print_node(ast node) {
 
     switch (node->type) {
         case AST_ID:
-            fprintf(output_d, "ID (%s)\n", node->id);
+            printf("ID (%s)\n", node->id);
             break;  
         case AST_INT:
-            fprintf(output_d, "TYPE INT\n");
+            printf("TYPE INT\n");
             break;
         case AST_DOUBLE:
-            fprintf(output_d, "TYPE DOUBLE\n");
+            printf("TYPE DOUBLE\n");
             break;
         case AST_VOID:
-            fprintf(output_d, "TYPE VOID \n");
+            printf("TYPE VOID \n");
             break;
         case AST_INT_VAL:
-            fprintf(output_d, "INT (%d)\n", node->int_val);
+            printf("INT (%d)\n", node->int_val);
             break;
         case AST_DOUBLE_VAL:
-            fprintf(output_d, "DOUBLE (%f)\n", node->double_val);
+            printf("DOUBLE (%f)\n", node->double_val);
             break;
         case AST_ADD:
-            fprintf(output_d, "OPERATOR (+)\n");
+            printf("OPERATOR (+)\n");
             break;
         case AST_MUL:
-            fprintf(output_d, "OPERATOR (*)\n");
+            printf("OPERATOR (*)\n");
             break;
         case AST_DIV:
-            fprintf(output_d, "OPERATOR (/)\n");
+            printf("OPERATOR (/)\n");
             break;
         case AST_MINUS:
-            fprintf(output_d, "BINARY (-)\n");
+            printf("BINARY (-)\n");
             break;
         case AST_UMINUS:
-            fprintf(output_d, "UNARY (-)\n");
+            printf("UNARY (-)\n");
             break;
         case AST_ASSIGN:
-            fprintf(output_d, "ASSIGN\n");
+            printf("ASSIGN\n");
             break;
         case AST_WHILE:
-            fprintf(output_d, "WHILE\n");
+            printf("WHILE\n");
             break;
         case AST_IF:
-            fprintf(output_d, "IF\n");
+            printf("IF\n");
             break;
         case AST_MAIN:
-            fprintf(output_d, "MAIN\n");
+            printf("MAIN\n");
             break;
         case AST_INC:
-            fprintf(output_d, "++\n");
+            printf("++\n");
             break;
         case AST_DEC:
-            fprintf(output_d, "--\n");
+            printf("--\n");
             break;
         case AST_RETURN:
-            fprintf(output_d, "RETURN\n");
+            printf("RETURN\n");
             break;
         case AST_FOR:
-            fprintf(output_d, "FOR\n");
+            printf("FOR\n");
             break;
         case AST_AND_OP:
-            fprintf(output_d, "OPERATOR (&&)\n");
+            printf("OPERATOR (&&)\n");
             break;
         case AST_OR_OP:
-            fprintf(output_d, "OPERATOR (||)\n");
+            printf("OPERATOR (||)\n");
             break;
         case AST_GEQ_OP:
-            fprintf(output_d, "OPERATOR (>=)\n");
+            printf("OPERATOR (>=)\n");
             break;
         case AST_LEQ_OP:
-            fprintf(output_d, "OPERATOR (<=)\n");
+            printf("OPERATOR (<=)\n");
             break;
         case AST_GT_OP:
-            fprintf(output_d, "OPERATOR (>)\n");
+            printf("OPERATOR (>)\n");
             break;
         case AST_LT_OP:
-            fprintf(output_d, "OPERATOR (<)\n");
+            printf("OPERATOR (<)\n");
             break;
         case AST_NEQ_OP:
-            fprintf(output_d, "OPERATOR (!=)\n");
+            printf("OPERATOR (!=)\n");
             break;
         case AST_EQ_OP:
-            fprintf(output_d, "OPERATOR (==)\n");
+            printf("OPERATOR (==)\n");
             break;
         case AST_STAT:
-            fprintf(output_d, "STATEMENT\n");
+            printf("STATEMENT\n");
             break;
         case AST_TABLE:
-            fprintf(output_d, "TABLE\n");
+            printf("TABLE\n");
             break;
         case AST_DIM:
-            fprintf(output_d, "DIMENSIONS\n");
+            printf("DIMENSIONS\n");
             break;
         case AST_ARRAY:
-            fprintf(output_d, "ARRAY\n");
+            printf("ARRAY\n");
             break;
         case AST_PRINTF:
-            fprintf(output_d, "PRINTF : %s \n", node->printf);
+            printf("PRINTF : %s \n", node->printf);
             break;
         case AST_LIST:
             print_list(node->list_type);
             break;
         case AST_FUNC:
-            fprintf(output_d, "FUNCTION \n");
+            printf("FUNCTION \n");
             break;
         case AST_CALL:
-            fprintf(output_d, "CALL : %s\n", node->id);
+            printf("CALL : %s\n", node->id);
             break;
         default:
-            fprintf(output_d, "UNDEFINED %d\n", node->type);
+            printf("UNDEFINED %d\n", node->type);
             break;
     }
 }
