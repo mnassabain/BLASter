@@ -41,6 +41,7 @@ endline         ;
 "for"           { if ( DEBUG_LEX ) printf("FOR "); return FOR; }
 "int"           { if ( DEBUG_LEX ) printf("INT "); return INT; }
 "double"        { if ( DEBUG_LEX ) printf("DOUBLE "); return DOUBLE; }
+"void"          { if ( DEBUG_LEX ) printf("VOID "); return VOID; }
 "&&"            { if ( DEBUG_LEX ) printf("AND_OP "); return AND_OP;}
 "||"            { if ( DEBUG_LEX ) printf("OR_OP "); return OR_OP;}
 ">="            { if ( DEBUG_LEX ) printf("GEQ_OP "); return GEQ_OP;}

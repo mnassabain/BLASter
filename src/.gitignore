@@ -1,6 +1,7 @@
 *.o
 *.output
 blaster
+spec
 test
 y.tab.c
 y.tab.h

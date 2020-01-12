@@ -213,13 +213,11 @@ ast add_child_node(node* n, node* child)
     ast ptr = n->first_child;
     while(ptr->next != NULL)
     {
-        printf("seeing next\n");
         ptr = ptr->next;
     }
 
     ptr->next = child;
     child->prev = ptr;
-    printf("child added\n");
     return n;
 }
 
@@ -261,6 +259,9 @@ void print_node(ast node) {
             break;
         case AST_DOUBLE:
             printf("TYPE DOUBLE\n");
+            break;
+        case AST_VOID:
+            printf("TYPE VOID \n");
             break;
         case AST_INT_VAL:
             printf("INT (%d)\n", node->int_val);
@@ -349,6 +350,9 @@ void print_node(ast node) {
         case AST_LIST:
             print_list(node->list_type);
             break;
+        case AST_FUNC:
+            printf("FUNCTION \n");
+            break;
         default:
             printf("UNDEFINED %d\n", node->type);
             break;
@@ -395,7 +399,7 @@ void print_code(ast tree, int indent)
                     ptr = ptr->next;
                     // TODO : RAJOUTER IF POUR SWITCH SEPARATEUR EN FONCTION DU TYPE 
                     // DE LA LISTE
-                    if (tree->list_type != LIST_STAT)
+                    if (tree->list_type != LIST_STAT && tree->list_type != LIST_FUNC)
                         printf(", ");
                     print_code(ptr, indent);
                 }
@@ -414,6 +418,17 @@ void print_code(ast tree, int indent)
             break;
         case AST_DOUBLE:
             printf("double ");
+            print_code(tree->first_child, indent);
+            ptr = tree->first_child;
+            while(ptr->next != NULL)
+            {
+                ptr = ptr->next;
+                printf(", ");
+                print_code(ptr, indent);
+            }
+            break;
+        case AST_VOID:
+            printf("void ");
             print_code(tree->first_child, indent);
             ptr = tree->first_child;
             while(ptr->next != NULL)
@@ -594,6 +609,21 @@ void print_code(ast tree, int indent)
             }
             printf(" } ");
             break;
+        case AST_FUNC:
+            if (count_child(tree) == 3) { // définition de fonction
+                print_code(tree->first_child, 0);
+                printf(" ( ");
+                print_code(tree->first_child->next, 0);
+                printf(" ) {\n");
+                print_code(tree->first_child->next->next, indent+1);
+                printf("}\n");
+            } else { // utilisation de fonction
+                print_code(tree->first_child, 0); // nom
+                printf(" ( ");
+                print_code(tree->first_child->next, 0); // paramètres
+                printf(" ) ");
+            }
+            break;
         default:
             printf("ERROR");
     }
@@ -638,6 +668,12 @@ void print_list(list_type list) {
             break;
         case LIST_UPDATE:
             printf("( UPDATES )");
+            break;
+        case LIST_FUNC:
+            printf("( FUNCTIONS )");
+            break;
+        case LIST_ARG:
+            printf("( ARGS )");
             break;
         default:
             printf("UNDEFINED");
