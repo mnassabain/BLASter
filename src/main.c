@@ -49,14 +49,18 @@ int main (int argc, char** argv) {
     yyparse(); // parse source code
 
     // Affichage de l'arbre 
-    if (opt_print_ast == 1)
+    if (opt_print_ast == 1) {
+        printf("Tree before replacing :\n");
         print_ast(arbre);
+    }
     // print_code(arbre, 0);
 
     replace(arbre);
 
-    if (opt_print_ast == 1)
+    if (opt_print_ast == 1) {
+        printf("\nTree after replacing :\n");
         print_ast(arbre);
+    }
 
     // print_code(arbre, 0);
 
@@ -75,39 +79,40 @@ int main (int argc, char** argv) {
     printf("\n\nPARSING SPEC FILE ...\n");
     zzparse();
 
-    if (opt_print_ast == 1)
+    if (opt_print_ast == 1) {
         print_ast(specTree);
+    }
         
     // print_code(specTree, 0);
     
     ////////////////////////////////////////////////////////////////////////////
     // / TESTING COMPARAISON
     
-    ast code = arbre->first_child->first_child->next->next->first_child;
-    // print_ast(code);
-    ast func = specTree->first_child->first_child->next->next->first_child->first_child;
-    // print_ast(func);
+    // ast code = arbre->first_child->first_child->next->next->first_child;
+    // // print_ast(code);
+    // ast func = specTree->first_child->first_child->next->next->first_child->first_child;
+    // // print_ast(func);
 
-    func = specTree->first_child;
-    ast ptr, res;
-    char* name;
-    while (func != NULL) {
-        name = func->first_child->first_child->id;
-        ptr = func->first_child->next->next->first_child->first_child;
-        printf("func name : %s\n", name);
-        // print_ast(ptr);
-        res = recursive_search(arbre, ptr);
-        while (res != NULL) {
-            printf("FOUND FUNCTION %s !!!!!!!!!\n", name);
-            ast new_func = new_node(AST_FUNC);
-            add_child_node(new_func, new_id(strdup(name)));
-            // ast arguments = new_list(AST_ARGS);
-            add_child_node(new_func, new_id(strdup("arguments")));
-            replace_node(res, new_func);
-            res = recursive_search(arbre, ptr);
-        }
-        func = func->next;
-    }
+    // func = specTree->first_child;
+    // ast ptr, res;
+    // char* name;
+    // while (func != NULL) {
+    //     name = func->first_child->first_child->id;
+    //     ptr = func->first_child->next->next->first_child->first_child;
+    //     printf("func name : %s\n", name);
+    //     // print_ast(ptr);
+    //     res = recursive_search(arbre, ptr);
+    //     while (res != NULL) {
+    //         printf("FOUND FUNCTION %s !!!!!!!!!\n", name);
+    //         ast new_func = new_node(AST_FUNC);
+    //         add_child_node(new_func, new_id(strdup(name)));
+    //         // ast arguments = new_list(AST_ARGS);
+    //         add_child_node(new_func, new_id(strdup("arguments")));
+    //         replace_node(res, new_func);
+    //         res = recursive_search(arbre, ptr);
+    //     }
+    //     func = func->next;
+    // }
     // if (compare_real(code, func) == 1) {
     //     printf("SUCCESS\n");
     // } else {
