@@ -1,8 +1,7 @@
 int main() 
 {
-    for (int i = 0; i < hi; i++) {
-        ty[i] = x * tz[i] + ty[i];
-    }
+    a = a + b * c;
+    a = c*b + a;
 
     return 0;
 }

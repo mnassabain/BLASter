@@ -44,14 +44,16 @@ int main (int argc, char** argv) {
         return 1;
     }
     yyin = input;
+
+    printf("PARSING INPUT FILE ...\n");
     yyparse(); // parse source code
 
     // Affichage de l'arbre 
     if (opt_print_ast == 1)
-        // print_ast(arbre);
+        print_ast(arbre);
     // print_code(arbre, 0);
 
-    // replace(arbre);
+    replace(arbre);
 
     if (opt_print_ast == 1)
         print_ast(arbre);
@@ -70,6 +72,7 @@ int main (int argc, char** argv) {
     }
     zzin = spec;
 
+    printf("\n\nPARSING SPEC FILE ...\n");
     zzparse();
 
     if (opt_print_ast == 1)
@@ -111,6 +114,8 @@ int main (int argc, char** argv) {
     //     printf("FAILED\n");
     // }
     ////////////////////////////////////////////////////////////////////////////
+
+    // output
     print_code(arbre, 0);
 
     // Clean
