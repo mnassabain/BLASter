@@ -666,30 +666,30 @@ int count_child(ast node) {
 }
 
 void print_list(list_type list) {
-    fprintf(output_d, "LIST ");
+    printf("LIST ");
     switch (list) {
         case LIST_COND:
-            fprintf(output_d, "( CONDITIONS )");
+            printf("( CONDITIONS )");
             break;
         case LIST_STAT:
-            fprintf(output_d, "( STATEMENTS )");
+            printf("( STATEMENTS )");
             break;
         case LIST_INIT:
-            fprintf(output_d, "( INITIALISATIONS )");
+            printf("( INITIALISATIONS )");
             break;
         case LIST_UPDATE:
-            fprintf(output_d, "( UPDATES )");
+            printf("( UPDATES )");
             break;
         case LIST_FUNC:
-            fprintf(output_d, "( FUNCTIONS )");
+            printf("( FUNCTIONS )");
             break;
         case LIST_ARG:
-            fprintf(output_d, "( ARGS )");
+            printf("( ARGS )");
             break;
         default:
-            fprintf(output_d, "UNDEFINED");
+            printf("UNDEFINED");
     }
-    fprintf(output_d, "\n");
+    printf("\n");
 }
 
 void swap_nodes(node* n1, node* n2) {

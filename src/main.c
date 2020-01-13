@@ -48,7 +48,7 @@ int main (int argc, char** argv) {
 
     // Affichage de l'arbre 
     if (opt_print_ast == 1)
-        print_ast(arbre);
+        // print_ast(arbre);
     // print_code(arbre, 0);
 
     // replace(arbre);
@@ -80,31 +80,31 @@ int main (int argc, char** argv) {
     ////////////////////////////////////////////////////////////////////////////
     // / TESTING COMPARAISON
     
-    // ast code = arbre->first_child->first_child->next->next->first_child;
-    // // print_ast(code);
-    // ast func = specTree->first_child->first_child->next->next->first_child->first_child;
-    // // print_ast(func);
+    ast code = arbre->first_child->first_child->next->next->first_child;
+    // print_ast(code);
+    ast func = specTree->first_child->first_child->next->next->first_child->first_child;
+    // print_ast(func);
 
-    // func = specTree->first_child;
-    // ast ptr, res;
-    // char* name;
-    // while (func != NULL) {
-    //     name = func->first_child->first_child->id;
-    //     ptr = func->first_child->next->next->first_child->first_child;
-    //     printf("func name : %s\n", name);
-    //     // print_ast(ptr);
-    //     res = recursive_search(arbre, ptr);
-    //     while (res != NULL) {
-    //         printf("FOUND FUNCTION %s !!!!!!!!!\n", name);
-    //         ast new_func = new_node(AST_FUNC);
-    //         add_child_node(new_func, new_id(strdup(name)));
-    //         // ast arguments = new_list(AST_ARGS);
-    //         add_child_node(new_func, new_id(strdup("arguments")));
-    //         replace_node(res, new_func);
-    //         res = recursive_search(arbre, ptr);
-    //     }
-    //     func = func->next;
-    // }
+    func = specTree->first_child;
+    ast ptr, res;
+    char* name;
+    while (func != NULL) {
+        name = func->first_child->first_child->id;
+        ptr = func->first_child->next->next->first_child->first_child;
+        printf("func name : %s\n", name);
+        // print_ast(ptr);
+        res = recursive_search(arbre, ptr);
+        while (res != NULL) {
+            printf("FOUND FUNCTION %s !!!!!!!!!\n", name);
+            ast new_func = new_node(AST_FUNC);
+            add_child_node(new_func, new_id(strdup(name)));
+            // ast arguments = new_list(AST_ARGS);
+            add_child_node(new_func, new_id(strdup("arguments")));
+            replace_node(res, new_func);
+            res = recursive_search(arbre, ptr);
+        }
+        func = func->next;
+    }
     // if (compare_real(code, func) == 1) {
     //     printf("SUCCESS\n");
     // } else {
@@ -145,7 +145,6 @@ int options (int argc, char** argv) {
 
     while((opt = getopt_long(argc, argv, "vtao:", options, &optindex)) != -1)
     {   
-        printf("%d", optindex);
         switch(opt)
         {
             case 'v':
