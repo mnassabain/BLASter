@@ -15,6 +15,9 @@ test-lvl0:
 test-lvl1:
 	./blaster src/level1.c src/nospec.c -a
 
+test-tds:
+	./blaster src/test.c src/nospec.c -t 
+
 clean:
 	cd src/ && make clean
 	rm -f blaster
