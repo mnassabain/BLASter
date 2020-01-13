@@ -4,20 +4,22 @@ TARGET = blaster
 
 all:
 	cd src/ && make final_target
-	mv src/blaster ./blaster
+	mv src/$(TARGET) ./$(TARGET)
 
 test-ast:
-	./blaster src/test.c src/spec.c -a -o output.output
+	./$(TARGET) src/test.c src/spec.c -a -o output.output
 
 test-lvl0:
-	./blaster src/level0.c src/nospec.c -a
+	./$(TARGET) src/level0.c src/nospec.c -a
 
 test-lvl1:
-	./blaster src/level1.c src/nospec.c -a
+	./$(TARGET) src/level1.c src/nospec.c -a
 
 test-tds:
-	./blaster src/test.c src/nospec.c -t 
+	./$(TARGET) src/test.c src/nospec.c -t 
 
 clean:
 	cd src/ && make clean
-	rm -f blaster
+	rm -f $(TARGET)
+
+
