@@ -3,6 +3,7 @@
 #include <stdio.h>
 // Doit être AVANT y.tab.h
 #include "../include/ast.h"
+#include "../include/symbolsTable.h"
 #include "y.tab.h"
 
 extern int DEBUG_LEX;
