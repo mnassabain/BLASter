@@ -44,53 +44,26 @@ void free_symbolt(symbolTable st)
 	free(st);
 }
 
-// Affichage de la table des symboles 
-// TODO rendre l'affichage plus beau
 void display_symbolt(symbolTable st)
 {
 	if (st != NULL)
 	{
+		printf("TYPE\tVALUE\n");
 		for (int i = 0; i < st->nb_var; i++)
 		{
 			if (!st->symbol_table[i].isConstant)
 			{
-				printf("name = %s, ", st->symbol_table[i].name);
-			}
-			printf("constante = %d, ", st->symbol_table[i].isConstant);
-
-			if (st->symbol_table[i].type == TYPE_INT)
-			{
-				printf("type = int");
-				if (st->symbol_table[i].isConstant)
+				printf("%s\t", st->symbol_table[i].name);
+				if (st->symbol_table[i].type == TYPE_DOUBLE)
 				{
-					printf(", value = %d", st->symbol_table[i].value.int_value);
+					printf("%s\n", "DOUBLE");
+				}
+				else if (st->symbol_table[i].type == TYPE_INT)
+				{
+					printf("%s\n", "INT");
 				}
 			}
-			else if (st->symbol_table[i].type == TYPE_DOUBLE)
-			{
-				printf("type = double");
-				if (st->symbol_table[i].isConstant) {
-					printf(", value = %lf", 
-									    st->symbol_table[i].value.double_value);
-				}
-			}
-			else // TYPE_UNKNOWN
-				printf("type inconnu");
-
-			printf("\n");
 		}
-		
-		printf("****** Affichage des %d scopes inférieurs ******\n", st->nb_scope);
-		// On affiche les scopes inférieurs
-		for (int i = 0; i < st->nb_scope; i++)
-		{
-			display_symbolt(st->lower_scope[i]);
-		}
-		
-	}
-	else 
-	{
-		fprintf(stderr, "display_st: erreur st null\n");
 	}
 }
 
@@ -128,7 +101,7 @@ symbol* insert_symbol_int(symbolTable st, char* name, int value,
 	{
 		if (lookup(st, name) != NULL)
 		{
-			fprintf(stderr, "insert_symbol %d : illegal car symbole déjà présent dans scope", st->nb_var);
+			fprintf(stderr, "insert_symbol %s : illegal car symbole déjà présent dans scope\n", name);
 			exit(EXIT_FAILURE);	
 		}
 	}
@@ -197,7 +170,7 @@ symbol* insert_symbol_double(symbolTable st, char* name, double value,
 	{
 		if (lookup(st, name) != NULL)
 		{
-			fprintf(stderr, "insert_symbol %d : illegal car symbole déjà présent dans scope", st->nb_var);
+			fprintf(stderr, "insert_symbol %s : illegal car symbole déjà présent dans scope\n", name);
 			exit(EXIT_FAILURE);	
 		}
 	}
