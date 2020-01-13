@@ -69,9 +69,11 @@ int main (int argc, char** argv) {
 
     // print_code(arbre, 0);
 
-    printf("****************** Table des symboles ******************\n");
-    display_symbolt(st);
-    printf("**************** Fin table des symboles ****************\n");
+    if (opt_print_symbol_table == 1) {
+        printf("\n****************** Table des symboles ******************\n");
+        display_symbolt(st);
+        printf("**************** Fin table des symboles ****************\n");
+    }
 
     ////////////////////////////////////////////////////////////////////////////
 
