@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "ast.h"
+#include "symbolsTable.h"
 
 int yylex();
 void yyerror(char*);
@@ -11,6 +12,7 @@ int DEBUG_LEX;
 extern FILE* yyin;
 
 ast arbre;
+symbolTable st;
 
 %}
 
@@ -140,7 +142,59 @@ initialisation:
     ;
 
 declaration:
-    type assign_list    { $$ = add_child_node($1, $2); }
+    type assign_list    { 
+                            $$ = add_child_node($1, $2); 
+                            node *assign = $2;
+                            node *assign_son;
+                            while(assign != NULL)
+                            {
+                                print_ast(assign);
+                                if (assign->type == AST_ID)
+                                {
+                                    if (assign->id != NULL)
+                                    {
+                                        switch ($1->type)
+                                        {
+                                            case AST_INT:
+                                                insert_symbol_int(st, assign->id, 0, 0);
+                                                break;
+                                            case AST_DOUBLE:
+                                                insert_symbol_double(st, assign->id, 0, 0);
+                                                break;
+                                        }
+                                    }
+                                }   
+                                else
+                                {
+                                    assign_son = assign->first_child;
+               
+                                    while(assign_son != NULL)
+                                    {       
+                                        if (assign_son->type == AST_ID)
+                                        {
+                                            switch ($1->type)
+                                            {
+                                                case AST_INT:
+                                                    insert_symbol_int(st, assign_son->id, 0, 0);
+                                                    break;
+                                                case AST_DOUBLE:
+                                                    insert_symbol_double(st, assign_son->id, 0, 0);
+                                                    break;
+                                                case AST_INT_VAL:
+                                                    insert_symbol_int(st, "\0", assign_son->int_val, 1);
+                                                    break;
+                                                case AST_DOUBLE_VAL:
+                                                    insert_symbol_double(st, "\0", assign_son->int_val, 1);
+                                                    break;
+                                            }
+                                        }
+                                        assign_son = assign_son->next;
+                                    }
+                                }
+                                assign = assign->next;
+                            }    
+                        }
+
     | assign_list       { $$ = $1; }
     ;
 
@@ -469,6 +523,8 @@ int main(int argc, char** argv) {
         return 1;
     }
     yyin = f;
+
+    st = create_symbolt();
     ////////////////////////////////
 
     yyparse();

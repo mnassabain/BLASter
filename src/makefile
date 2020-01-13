@@ -11,11 +11,14 @@ prefixe=blaster
 # 	lex $(prefixe).l
 # 	gcc lex.yy.c -o $(prefixe) -ll
 
-all: ast.o y.tab.o lex.yy.o
-	gcc ast.o y.tab.o lex.yy.o -lfl -o $(prefixe) -g
+all: ast.o symbolsTable.o y.tab.o lex.yy.o
+	gcc ast.o symbolsTable.o y.tab.o lex.yy.o -lfl -o $(prefixe) -g
 
 ast.o: ast.c ../include/ast.h
 	gcc -c ast.c -g
+
+symbolsTable.o: symbolsTable.c ../include/symbolsTable.h
+	gcc -c symbolsTable.c -g
 
 y.tab.o: $(prefixe).y
 	yacc -d $(prefixe).y
@@ -26,8 +29,8 @@ lex.yy.o: $(prefixe).l
 	gcc -c lex.yy.c -g
 
 # final target
-final_target: ast.o blaster.o spec.o lex.yy.o lex.zz.o main.o
-	gcc ast.o blaster.o spec.o lex.yy.o lex.zz.o main.o -lfl -o $(prefixe) -g -o blaster
+final_target: ast.o symbolsTable.o blaster.o spec.o lex.yy.o lex.zz.o main.o
+	gcc ast.o blaster.o symbolsTable.o spec.o lex.yy.o lex.zz.o main.o -lfl -o $(prefixe) -g -o blaster
 
 main.o: main.c
 	gcc -c main.c -g -I../include/ -g
@@ -46,12 +49,12 @@ spec.o: specParser.y
 	gcc -c specParser.c -g -I../include/ -o spec.o -DSPEC_PARSER
 
 # test target
-test: launch_test.o ast.o lex.yy.o
-	gcc launch_test.o ast.o y.tab.o lex.yy.o -lfl -o test -I./ -I../include/
+test: launch_test.o ast.o symbolsTable.o lex.yy.o
+	gcc launch_test.o ast.o symbolsTable.o y.tab.o lex.yy.o -lfl -o test -I./ -I../include/
 
 # spec parser
-spec: specParser.o ast.o lex.yy.o 
-	gcc specParser.o ast.o lex.yy.o -lfl -o spec -I./ -I../include/
+spec: specParser.o ast.o symbolsTable.o lex.yy.o 
+	gcc specParser.o ast.o symbolsTable.o lex.yy.o -lfl -o spec -I./ -I../include/
 
 specParser.o: specParser.y
 	yacc -d specParser.y
@@ -65,4 +68,4 @@ launch_test.o: yyparse
 	gcc -c ../tests/grammar/launch_test.c -I./ -I../include/
 
 clean:
-	rm -f *.o y.tab.c y.tab.h lex.yy.c lex.zz.c y.output a.out $(prefixe) ast.o test spec specParser.h specParser.c
+	rm -f *.o y.tab.c y.tab.h lex.yy.c lex.zz.c y.output a.out $(prefixe) ast.o symbolsTable.o test spec specParser.h specParser.c

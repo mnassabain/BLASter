@@ -3,6 +3,7 @@
 #include "ast.h"
 #include "y.tab.h"
 #include "specParser.h"
+#include "symbolsTable.h"
 
 int DEBUG_LEX = 0;
 int opt_print_ast = 0;
@@ -12,6 +13,7 @@ extern FILE* yyin;
 extern FILE* zzin;
 extern ast arbre;
 extern ast specTree;
+extern symbolTable st;
 extern void lex_zzfree();   // lexer spec
 extern void lex_yyfree();   // lexer file
 
@@ -34,6 +36,9 @@ int main (int argc, char** argv) {
         output_d = stdout;
     }
     
+    // Init table des symboles
+    st = create_symbolt();
+
     char* input_source = argv[idx];
     char* specif_source = argv[idx+1];
 
@@ -57,6 +62,10 @@ int main (int argc, char** argv) {
         print_ast(arbre);
 
     // print_code(arbre, 0);
+
+    printf("****************** Table des symboles ******************\n");
+    display_symbolt(st);
+    printf("**************** Fin table des symboles ****************\n");
 
     ////////////////////////////////////////////////////////////////////////////
 
@@ -118,6 +127,7 @@ int main (int argc, char** argv) {
     delete_node(specTree);
     lex_zzfree();
     lex_yyfree();
+    free_symbolt(st);
     fclose(input);
     fclose(spec);
 
