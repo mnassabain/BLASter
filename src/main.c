@@ -49,17 +49,23 @@ int main (int argc, char** argv) {
         return 1;
     }
     yyin = input;
+
+    printf("PARSING INPUT FILE ...\n");
     yyparse(); // parse source code
 
     // Affichage de l'arbre 
-    if (opt_print_ast == 1)
+    if (opt_print_ast == 1) {
+        printf("Tree before replacing :\n");
         print_ast(arbre);
+    }
     // print_code(arbre, 0);
 
-    // replace(arbre);
+    replace(arbre);
 
-    if (opt_print_ast == 1)
+    if (opt_print_ast == 1) {
+        printf("\nTree after replacing :\n");
         print_ast(arbre);
+    }
 
     // print_code(arbre, 0);
 
@@ -79,10 +85,12 @@ int main (int argc, char** argv) {
     }
     zzin = spec;
 
+    printf("\n\nPARSING SPEC FILE ...\n");
     zzparse();
 
-    if (opt_print_ast == 1)
+    if (opt_print_ast == 1) {
         print_ast(specTree);
+    }
         
     // print_code(specTree, 0);
     
@@ -120,6 +128,8 @@ int main (int argc, char** argv) {
     //     printf("FAILED\n");
     // }
     ////////////////////////////////////////////////////////////////////////////
+
+    // output
     print_code(arbre, 0);
 
     // Clean
@@ -155,7 +165,6 @@ int options (int argc, char** argv) {
 
     while((opt = getopt_long(argc, argv, "vtao:", options, &optindex)) != -1)
     {   
-        printf("%d", optindex);
         switch(opt)
         {
             case 'v':

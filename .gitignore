@@ -2,6 +2,8 @@
 # Created by https://www.gitignore.io/api/c,flex,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=c,flex,visualstudiocode
 
+blaster
+*.output
 ### C ###
 # Prerequisites
 *.d
