@@ -6,6 +6,7 @@
 #include "y.tab.h"
 
 extern int DEBUG_LEX;
+extern FILE* output_d;
 
 /// MACROS AND COMMENTS IGNORED, NEED TO BE COPIED IN DESTINATION FILE
 %}
@@ -28,7 +29,7 @@ endline         ;
 "++"            { if ( DEBUG_LEX ) printf("INC "); return INC;}
 "--"            { if ( DEBUG_LEX ) printf("DEC "); return DEC;}
 "main"          { if ( DEBUG_LEX ) printf("MAIN "); return MAIN; }
-{macro}         { if ( DEBUG_LEX ) printf("MACRO "); }
+{macro}         { if ( DEBUG_LEX ) printf("MACRO "); fprintf(output_d, "%s\n", yytext); }
 {printf}        { yylval.string = strdup(yytext); if ( DEBUG_LEX ) printf("PRINTF "); return PRINTF; }
 "return"        { if ( DEBUG_LEX ) printf("RETURN "); return RETURN; }
 "if"            { if ( DEBUG_LEX ) printf("IF "); return IF; }

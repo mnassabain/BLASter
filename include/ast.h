@@ -187,4 +187,7 @@ int compare_real(ast tree1, ast tree2);
  * @param tree ast sur lequel on veut travailler 
  */
 void replace(ast tree);
+
+ast recursive_search(ast tree, ast branch);
+void replace_node(node* old_node, node* new_node);
 #endif

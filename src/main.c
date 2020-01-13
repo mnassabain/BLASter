@@ -51,12 +51,12 @@ int main (int argc, char** argv) {
         print_ast(arbre);
     // print_code(arbre, 0);
 
-    replace(arbre);
+    // replace(arbre);
 
     if (opt_print_ast == 1)
         print_ast(arbre);
 
-    print_code(arbre, 0);
+    // print_code(arbre, 0);
 
     ////////////////////////////////////////////////////////////////////////////
 
@@ -72,23 +72,46 @@ int main (int argc, char** argv) {
 
     zzparse();
 
-    // print_ast(specTree);
+    if (opt_print_ast == 1)
+        print_ast(specTree);
+        
     // print_code(specTree, 0);
     
     ////////////////////////////////////////////////////////////////////////////
-    /// TESTING COMPARAISON
+    // / TESTING COMPARAISON
     
     // ast code = arbre->first_child->first_child->next->next->first_child;
-    // print_ast(code);
+    // // print_ast(code);
     // ast func = specTree->first_child->first_child->next->next->first_child->first_child;
-    // print_ast(func);
+    // // print_ast(func);
+
+    // func = specTree->first_child;
+    // ast ptr, res;
+    // char* name;
+    // while (func != NULL) {
+    //     name = func->first_child->first_child->id;
+    //     ptr = func->first_child->next->next->first_child->first_child;
+    //     printf("func name : %s\n", name);
+    //     // print_ast(ptr);
+    //     res = recursive_search(arbre, ptr);
+    //     while (res != NULL) {
+    //         printf("FOUND FUNCTION %s !!!!!!!!!\n", name);
+    //         ast new_func = new_node(AST_FUNC);
+    //         add_child_node(new_func, new_id(strdup(name)));
+    //         // ast arguments = new_list(AST_ARGS);
+    //         add_child_node(new_func, new_id(strdup("arguments")));
+    //         replace_node(res, new_func);
+    //         res = recursive_search(arbre, ptr);
+    //     }
+    //     func = func->next;
+    // }
     // if (compare_real(code, func) == 1) {
     //     printf("SUCCESS\n");
     // } else {
     //     printf("FAILED\n");
     // }
     ////////////////////////////////////////////////////////////////////////////
-
+    print_code(arbre, 0);
 
     // Clean
     delete_node(arbre);

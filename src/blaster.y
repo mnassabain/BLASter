@@ -79,7 +79,7 @@ axiom:
             ast list = new_list(LIST_STAT);
             add_child_node(list, $6);
             add_child_node(arbre, list);
-            printf("\nFOUND\n");
+            // printf("\nFOUND\n");
             return 0;
         }
     ;

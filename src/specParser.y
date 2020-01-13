@@ -79,7 +79,7 @@ axiom:
         {   
             specTree = new_list(LIST_FUNC);
             add_child_node(specTree, $1);
-            printf("\nFOUND\n");
+            // printf("\nFOUND\n");
             return 0;
         }
     ;

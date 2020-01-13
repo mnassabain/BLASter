@@ -88,6 +88,7 @@ ast* get_children(ast node)
         ptr = ptr->next;
     }
 
+    printf("nb_child = %d", nb_children);
     ast* children = (ast*)malloc(nb_children * sizeof(ast));
     ptr = tmp;
 
@@ -911,12 +912,21 @@ int compare_real(ast tree1, ast tree2)
     // if (tree1->type == AST_ADD  || tree1->type == AST_ADD  || tree1->type == AST_DIV || tree1->type == AST_MUL) {
         
     // }
+    // if (tree1->type == AST_ASSIGN && tree2->type == AST_ASSIGN)
+    //     return 1;
     if (tree1->type == AST_ID && (tree2->type == AST_INT_VAL || tree2->type == AST_DOUBLE_VAL) ) {
         return 1;
     }
     if (tree2->type == AST_ID && (tree1->type == AST_INT_VAL || tree1->type == AST_DOUBLE_VAL) ) {
         return 1;
     }
+    // if (tree1->type == AST_ID && (tree2->type == AST_ADD || tree2->type == AST_MUL || tree2->type == AST_DIV || tree2->type == AST_MINUS ) ) {
+    //     return 1;
+    // }
+    // if (tree2->type == AST_ID && (tree1->type == AST_ADD || tree1->type == AST_MUL || tree1->type == AST_DIV || tree1->type == AST_MINUS ) ) {
+    //     return 1;
+    // }
+
     if (tree1->type == AST_LT_OP && tree2->type == AST_LT_OP)
         return 1;
     if (tree1->type == AST_GT_OP && tree2->type == AST_GT_OP)
@@ -946,4 +956,41 @@ int compare_real(ast tree1, ast tree2)
     }
 
     return return_val;
+}
+
+// searching branch in the tree
+ast recursive_search(ast tree, ast branch) {
+
+    if (tree == NULL)
+        return NULL;
+
+    if (compare_real (tree, branch))
+        return tree;
+
+    ast ptr = tree->first_child;
+    ast found;
+    while(ptr != NULL) {
+        if ( (found = recursive_search(ptr, branch)) != NULL )
+            return found;
+        else
+            ptr = ptr->next;
+    }
+    return NULL;
+}
+
+void replace_node(node* old_node, node* new_node) {
+
+    if (old_node->parent != NULL) {
+        new_node->parent = old_node->parent;
+        old_node->parent->first_child = new_node;
+        new_node->next = old_node->next;
+        printf("first child\n");
+    }
+
+    if (old_node->prev != NULL) {
+        old_node->prev->next = new_node;
+        printf("brother\n");
+    }
+
+    delete_node(old_node);
 }

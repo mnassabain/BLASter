@@ -7,6 +7,7 @@
 
 
 extern int DEBUG_LEX;
+extern FILE* output_d;
 // if ((debug = getenv ("DEBUG_LEX")) != NULL) {
 //     DEBUG_LEX = atoi(debug);
 // }
@@ -34,7 +35,7 @@ endline         ;
 "++"            { if ( DEBUG_LEX ) printf("INC "); return INC;}
 "--"            { if ( DEBUG_LEX ) printf("DEC "); return DEC;}
 "main"          { if ( DEBUG_LEX ) printf("MAIN "); return MAIN; }
-{macro}         { if ( DEBUG_LEX ) printf("MACRO "); }
+{macro}         { if ( DEBUG_LEX ) printf("MACRO "); fprintf(output_d, "%s\n", yytext); }
 {printf}        { zzlval.string = strdup(yytext); if ( DEBUG_LEX ) printf("PRINTF "); return PRINTF; }
 "return"        { if ( DEBUG_LEX ) printf("RETURN "); return RETURN; }
 "if"            { if ( DEBUG_LEX ) printf("IF "); return IF; }
